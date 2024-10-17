@@ -137,36 +137,104 @@
 
 // export default App;
 
-////////////////////////////////////////////
-// 2-4. Animations and Pseudo Selectors
+// ////////////////////////////////////////////
+// // 2-4. Animations and Pseudo Selectors
 
-// ✅ 애니메이션 keyframes 사용
-// ✅ styled component 안의 element를 선택하는 방법 1
-// styled component 만들지 않고 만든 것에 다른 태그들도 선택해서 써줄 수 있음
-// 다른 element도 target 할 수 있다
-// 즉, 한 component만 styled 처리해주고 다른 건 target 처리 하는 것
-// &:hover, active 만들 수 있다 = span:hover와 같음
+// // ✅ 애니메이션 keyframes 사용
+// // ✅ styled component 안의 element를 선택하는 방법 1
+// // styled component 만들지 않고 만든 것에 다른 태그들도 선택해서 써줄 수 있음
+// // 다른 element도 target 할 수 있다
+// // 즉, 한 component만 styled 처리해주고 다른 건 target 처리 하는 것
+// // &:hover, active 만들 수 있다 = span:hover와 같음
+
+// import styled, { keyframes } from 'styled-components';
+
+// const Wrapper = styled.div`
+//   display: flex;
+// `;
+
+// const rotationAnimation = keyframes`
+//   0% {
+//     transform:rotate(0deg);
+//     border-radius:0px;
+//   }
+//   50% {
+//     border-radius:100px;
+//   }
+//   100%{
+//     transform:rotate(360deg);
+//     border-radius:0px;
+//   }
+// `;
+
+// const Box = styled.div`
+//   height: 200px;
+//   width: 200px;
+//   background-color: tomato;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   animation: ${rotationAnimation} 1s linear infinite;
+//   span {
+//     font-size: 36px;
+//     &:hover {
+//       font-size: 48px;
+//     }
+//     &:active {
+//       opacity: 0;
+//     }
+//   }
+// `;
+
+// function App() {
+//   return (
+//     <Wrapper>
+//       <Box>
+//         <span>🤩</span>
+//       </Box>
+//     </Wrapper>
+//   );
+// }
+
+// export default App;
+
+////////////////////////////////////////////
+// 2-5. Pseudo Selectors part Two
+
+// ✅ styled component 안의 element를 선택하는 방법 2
+// 태그를 바꿔줄 때? 다 바꿔줘야하니 태그명에 의존하고 싶지 않다면?
 
 import styled, { keyframes } from 'styled-components';
 
 const Wrapper = styled.div`
   display: flex;
+  height: 100vh;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
 `;
 
 const rotationAnimation = keyframes`
-  0% {
-    transform:rotate(0deg);
-    border-radius:0px;
-  }
-  50% {
-    border-radius:100px;
-  }
+   0% {
+     transform:rotate(0deg);
+     border-radius:0px;
+   }
+   50% {
+     border-radius:100px;
+   }
   100%{
-    transform:rotate(360deg);
+     transform:rotate(360deg);
     border-radius:0px;
-  }
+   }
+ `;
+
+// Emoji로 직접 만들어서 스타일 적용
+const Emoji = styled.span`
+  font-size: 36px;
 `;
 
+// Box 컴포넌트 안에 Emoji 컴포넌트를 직접적으로 타겟팅 할 수 있음
+// 태그에 의존하지 않고 Emoji로 쓰면 태그명이 달라도 상관 없다
 const Box = styled.div`
   height: 200px;
   width: 200px;
@@ -175,14 +243,8 @@ const Box = styled.div`
   justify-content: center;
   align-items: center;
   animation: ${rotationAnimation} 1s linear infinite;
-  span {
-    font-size: 36px;
-    &:hover {
-      font-size: 48px;
-    }
-    &:active {
-      opacity: 0;
-    }
+  ${Emoji}:hover {
+    font-size: 98px;
   }
 `;
 
@@ -190,8 +252,9 @@ function App() {
   return (
     <Wrapper>
       <Box>
-        <span>🤩</span>
+        <Emoji as="span">🤩</Emoji>
       </Box>
+      <Emoji>🔥</Emoji>
     </Wrapper>
   );
 }
