@@ -89,49 +89,110 @@
 
 // export default App;
 
+// ////////////////////////////////////////////
+// // 2-3. 'As' and Attrs
+
+// // ✅ As
+// // 다수의 컴포넌트를 다룰 때
+// // 컴포넌트의 태그를 바꾸고 싶은데 스타일은 바꾸고 싶지 않을 때
+
+// // ✅ Attrs
+// // HTML 태그의 속성을 설정할 수 있음
+// // styled components가 컴포넌트를 생성할 때, 속성 값을 설정할 수 있게 해줌
+
+// import styled from 'styled-components';
+
+// const Father = styled.div`
+//   display: flex;
+// `;
+
+// // const Btn = styled.button`
+// //   color: white;
+// //   background-color: tomato;
+// //   border: 0;
+// //   border-radius: 15px;
+// // `;
+
+// // input으로 전달 될 모든 속성을 가진 오브젝트 담을 수 있다
+// const Input = styled.input.attrs({ required: true })`
+//   background-color: tomato;
+// `;
+
+// function App() {
+//   return (
+//     <Father as="header">
+//       {/* <Btn>Log in</Btn>
+//       버튼을 a태그로 바꿈
+//       <Btn as="a" href="/">
+//         Log in
+//       </Btn> */}
+//       <Input />
+//       <Input />
+//       <Input />
+//       <Input />
+//       <Input />
+//     </Father>
+//   );
+// }
+
+// export default App;
+
 ////////////////////////////////////////////
-// 2-3. 'As' and Attrs
+// 2-4. Animations and Pseudo Selectors
 
-// ✅ As
-// 다수의 컴포넌트를 다룰 때
-// 컴포넌트의 태그를 바꾸고 싶은데 스타일은 바꾸고 싶지 않을 때
+// ✅ 애니메이션 keyframes 사용
+// ✅ styled component 안의 element를 선택하는 방법 1
+// styled component 만들지 않고 만든 것에 다른 태그들도 선택해서 써줄 수 있음
+// 다른 element도 target 할 수 있다
+// 즉, 한 component만 styled 처리해주고 다른 건 target 처리 하는 것
+// &:hover, active 만들 수 있다 = span:hover와 같음
 
-// ✅ Attrs
-// HTML 태그의 속성을 설정할 수 있음
-// styled components가 컴포넌트를 생성할 때, 속성 값을 설정할 수 있게 해줌
+import styled, { keyframes } from 'styled-components';
 
-import styled from 'styled-components';
-
-const Father = styled.div`
+const Wrapper = styled.div`
   display: flex;
 `;
 
-// const Btn = styled.button`
-//   color: white;
-//   background-color: tomato;
-//   border: 0;
-//   border-radius: 15px;
-// `;
+const rotationAnimation = keyframes`
+  0% {
+    transform:rotate(0deg);
+    border-radius:0px;
+  }
+  50% {
+    border-radius:100px;
+  }
+  100%{
+    transform:rotate(360deg);
+    border-radius:0px;
+  }
+`;
 
-// input으로 전달 될 모든 속성을 가진 오브젝트 담을 수 있다
-const Input = styled.input.attrs({ required: true })`
+const Box = styled.div`
+  height: 200px;
+  width: 200px;
   background-color: tomato;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: ${rotationAnimation} 1s linear infinite;
+  span {
+    font-size: 36px;
+    &:hover {
+      font-size: 48px;
+    }
+    &:active {
+      opacity: 0;
+    }
+  }
 `;
 
 function App() {
   return (
-    <Father as="header">
-      {/* <Btn>Log in</Btn>
-      버튼을 a태그로 바꿈
-      <Btn as="a" href="/">
-        Log in
-      </Btn> */}
-      <Input />
-      <Input />
-      <Input />
-      <Input />
-      <Input />
-    </Father>
+    <Wrapper>
+      <Box>
+        <span>🤩</span>
+      </Box>
+    </Wrapper>
   );
 }
 
