@@ -1,3 +1,17 @@
+// import React from 'react';
+// import ReactDOM from 'react-dom/client';
+// import App from './App';
+
+// const root = ReactDOM.createRoot(document.getElementById('root'));
+// root.render(
+//   <React.StrictMode>
+//     <App />
+//   </React.StrictMode>
+// );
+
+////////////////////////////////////////////
+// 2-7. Themes
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider } from 'styled-components';
@@ -15,7 +29,7 @@ const ligthTheme = {
   backgroundColor: 'whitesmoke',
 };
 
-// theme 셋팅
+// 🔶 theme 셋팅
 // ThemeProvider 를 styled-components 로부터 import 해줘야 함
 // <App /> 은 ThemeProvider 로 감싸줌
 // ThemeProvider 는 theme prop 하나가 필요

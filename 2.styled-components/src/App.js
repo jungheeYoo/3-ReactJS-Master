@@ -198,7 +198,7 @@
 
 // export default App;
 
-////////////////////////////////////////////
+/* ////////////////////////////////////////////
 // 2-5. Pseudo Selectors part Two
 
 // ✅ styled component 안의 element를 선택하는 방법 2
@@ -252,9 +252,50 @@ function App() {
   return (
     <Wrapper>
       <Box>
+        // 이모지가 span이든 div든 상관 없다
         <Emoji as="span">🤩</Emoji>
       </Box>
       <Emoji>🔥</Emoji>
+    </Wrapper>
+  );
+}
+
+export default App; */
+
+////////////////////////////////////////////
+// 2-7. Themes
+
+// ✅ themes - 다크모드 구현
+// 다크모드 구현한다고 하면 50%는 theme의 역할
+// 나머지는 local Estate Management
+
+// theme이란, 기본적으로 모든 색상들을 가지고 있는 object
+// 모든 색깔을 하나의 object 안에 넣어놨기 때문에,
+// 나중에 색깔 바꿀 때 그냥 그 object 만 바꿔주면 된다
+// App이 ThemeProvider안에 있기 때문에, 컴포넌트들이 색에 접근할 수 있다
+
+// Title 이 App 컴포넌트 안에 있고, App은 ThemeProvider 안에 있기 때문에
+// Title이 Theme object 에 접근해서 textColor 를 얻을 수 있다
+
+import styled from 'styled-components';
+
+const Title = styled.h1`
+  color: ${(props) => props.theme.textColor};
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.backgroundColor};
+`;
+
+function App() {
+  return (
+    <Wrapper>
+      <Title>Hello</Title>
     </Wrapper>
   );
 }
