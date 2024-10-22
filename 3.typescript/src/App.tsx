@@ -1,6 +1,5 @@
 // 3-5. Forms
-
-// event들에 타입을 추가하는 방법
+// ✅ event들에 타입을 추가하는 방법
 
 // FormEvent 이런건 공식 문서 또는 구글링으로 필요할 때 찾아서 씀
 // FormEvent React.FormEvent<T = Element>

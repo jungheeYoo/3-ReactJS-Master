@@ -20,14 +20,32 @@
 //   </React.StrictMode>
 // );
 
+// ////////////////////////////////////////////////
+// // 3-3
+// // ✅ Optional Props
+// // ✅ default props
+
+// import React from 'react';
+// import ReactDOM from 'react-dom/client';
+// import AppCircle from './App-circle';
+
+// // const root = ReactDOM.createRoot(document.getElementById('root')); // 타입스크립트 에러 나서 수정
+// const root = ReactDOM.createRoot(
+//   document.getElementById('root') as HTMLElement
+// );
+// root.render(
+//   <React.StrictMode>
+//     <AppCircle />
+//   </React.StrictMode>
+// );
+
 ////////////////////////////////////////////////
-// 3-3
-// ✅ Optional Props
-// ✅ default props
+// 3-5. Forms
+// ✅ event들에 타입을 추가하는 방법
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import AppCircle from './App-circle';
+import App from './App';
 
 // const root = ReactDOM.createRoot(document.getElementById('root')); // 타입스크립트 에러 나서 수정
 const root = ReactDOM.createRoot(
@@ -35,6 +53,6 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <AppCircle />
+    <App />
   </React.StrictMode>
 );
