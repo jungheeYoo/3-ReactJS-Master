@@ -1,3 +1,12 @@
+// 3-6
+// ✅ Themes
+// 타입스크립트와 styled components 테마 연결
+
+// declaration 선언 파일
+// styled.d.ts 파일의 주요 용도
+// 커스텀 테마 타입 정의
+// 전역 모듈 확장 (Module Augmentation)
+
 // import original module declarations
 // 1. styled-components를 임포트하고
 import 'styled-components';
