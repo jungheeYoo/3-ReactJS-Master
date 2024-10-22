@@ -82,8 +82,11 @@ function App() {
 
 export default App;
 
+// 배웠던 것들
 // 함수와 인자들의 타입 지정하는 법
 // 컴포넌트의 prop들의 타입 지정하는 법
 // 어떻게 하면 prop들을 선택적으로 만들 수 있는지, 또는 필수적으로 만드는지
 // prop에 기본 값 주는 방법
 // event 이벤트에 타입 지정하는 법
+
+// SyntheticEvent.. FormEvent 이벤트 같은 것 찾을 수 있다
