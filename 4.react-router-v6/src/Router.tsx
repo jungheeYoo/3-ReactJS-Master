@@ -39,36 +39,98 @@
 
 // export default Router;
 
-////////////////////////////////////////////////
-// ✅ 4-2. createBrowserRouter
-// BrowserRouter (v5버전) vs createBrowserRouter
+// ////////////////////////////////////////////////
+// // ✅ 4-2. createBrowserRouter
+// // BrowserRouter (v5버전) vs createBrowserRouter
+
+// import { createBrowserRouter } from 'react-router-dom';
+// import About from './screens/About';
+// import Home from './screens/Home';
+// import Root from './Root';
+
+// // Router 역시 Header를 더 이상 render 하지 않으니까 없앰
+// // 그리고 전체 컴포넌트도 없애줌. 그리고 const Router 생성
+// // createBrowserRouter라는 함수를 import 해줌. 이건 react-router-dom 에서 옴. react-router-dom 입력
+
+// // BrowserRouter 대신 createBrowserRouter 바꿔주면
+// // 우리의 Router 를 array 형식으로 표현할 수 있게 해줌. 즉, JavaScript Object로부터
+
+// // 🔶 첫 번재 route 만들기
+// // 첫 번재 route 는 Home 페이지가 아님
+// // 대신 전체 route 들의 컨테이너와 같은 것이 될 것임
+// // 그래서 App.tsx 를 Root.tsx 로 바꿈
+
+// // 1️⃣ 먼저 할 것은 path 정하기
+// // 만약 유저가 path: '/', 이 URL로 이동한다면
+// // 또는 만약 location이 그 URL과 일치한다면 우리는 element Root 를 render 할 것임
+
+// // 2️⃣ Home, About 화면 render 하기
+// // Home, About 화면 render 하려면 path: '/',를 부모로 생각해야함
+// // Home이나 About은 '자식'으로 생각하면 된다
+// // '/'는 URL 그 자체, '/about' 은 일종의 '/' 의 자식인 것이다
+// // 이게 우리가 about을 '/' 경로의 children 안에 넣은 이유이다
+
+// const router = createBrowserRouter([
+//   {
+//     path: '/',
+//     element: <Root />,
+//     children: [
+//       {
+//         path: '',
+//         element: <Home />,
+//       },
+//       {
+//         path: 'about',
+//         element: <About />,
+//       },
+//     ],
+//   },
+// ]);
+
+// export default router;
+
+// // ✨ http://localhost:3000/about 해도 hello 만 보임. 즉, 여전히 '/' 이것과 매치 됨.
+// // 여전히 Root 를 render 하고 있음
+// // 왜냐하면 아직도 '/' 안에 있고 그에 about 을 더해주고 있는 셈
+
+// // 그래서 무엇을 해야 하냐면 react-router-dom 에게 Root 의 자식을 render 하길 원한다라고 알려줘야 함 => Root 폴더로 가서
+// // Root의 자식을 render 하길 원한다면?
+
+// // Root 안으로 가서 <Outlet /> 이라는 컴포넌트 적어준다
+// // 이렇게 하면 예를 들어, /about 페이지로 가면 무슨 일이 일어나냐면
+// // react router가 이 Root를 보고 Root를 render하고
+// // 네가 /about으로 가려고 하는 상황이기 때문에
+// // react router는 Oulet이라는을 About으로 대체하려고 한다
+
+// // 📌 다시 한번 설명!
+// // 네가 /about으로 가고자 하면, 넌 path: '/', 이 URL로 매치가 됨
+// // 그러면 react router는 Root를 Render 하게 됨
+// // 그런데 Root한테 자식이 있기 때문에
+// // 우리는 Oulet이라는 컴포넌트를 사용함
+// // react router는 이 Oulet 컴포넌트를 통해서 URL을 보게 되는데
+// // 예를 들면, /about 이라면, Root를 render하고 About도 render하게 됨
+// // 여기서 뭘하냐면, Oulet 을 네가 render 하고자 하는 route로 바꿔서 render 한 것
+// // 그것이 자식 route이다
+
+//////////////////////////////////////////////
+// ✅ 4-3. errorElement
+
+// 라우터 버전 6는 route 들이 errorElement 를 가진다
+// 이것은 우리의 컴포넌트에 에러가 발생해서 충돌하거나
+// 컴포넌트의 위치를 찾지 못할 때 쓰는 것
+// 에러 컴포넌트를 쓰는 이유는 다른 컴포넌트들을 또 다른 컴포넌트에서
+// 발생하는 문제로부터 보호해주기 때문
+
+// Root element path 에 에러를 추가할 수 있다
+// 이것은 아무 자식도 발견되지 않았을 때 나타남 ex) http://localhost:3000/dfkj
+// 또한 컴포넌트가 충돌할 때도 작동함
 
 import { createBrowserRouter } from 'react-router-dom';
 import About from './screens/About';
 import Home from './screens/Home';
 import Root from './Root';
-
-// Router 역시 Header를 더 이상 render 하지 않으니까 없앰
-// 그리고 전체 컴포넌트도 없애줌. 그리고 const Router 생성
-// createBrowserRouter라는 함수를 import 해줌. 이건 react-router-dom 에서 옴. react-router-dom 입력
-
-// BrowserRouter 대신 createBrowserRouter 바꿔주면
-// 우리의 Router 를 array 형식으로 표현할 수 있게 해줌. 즉, JavaScript Object로부터
-
-// 🔶 첫 번재 route 만들기
-// 첫 번재 route 는 Home 페이지가 아님
-// 대신 전체 route 들의 컨테이너와 같은 것이 될 것임
-// 그래서 App.tsx 를 Root.tsx 로 바꿈
-
-// 1️⃣ 먼저 할 것은 path 정하기
-// 만약 유저가 path: '/', 이 URL로 이동한다면
-// 또는 만약 location이 그 URL과 일치한다면 우리는 element Root 를 render 할 것임
-
-// 2️⃣ Home, About 화면 render 하기
-// Home, About 화면 render 하려면 path: '/',를 부모로 생각해야함
-// Home이나 About은 '자식'으로 생각하면 된다
-// '/'는 URL 그 자체, '/about' 은 일종의 '/' 의 자식인 것이다
-// 이게 우리가 about을 '/' 경로의 children 안에 넣은 이유이다
+import NotFound from './screens/NotFound';
+import ErrorComponent from './components/ErrorComponent';
 
 const router = createBrowserRouter([
   {
@@ -78,36 +140,28 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <Home />,
+        errorElement: <ErrorComponent />,
       },
       {
         path: 'about',
         element: <About />,
       },
     ],
+    errorElement: <NotFound />,
   },
 ]);
 
 export default router;
 
-// ✨ http://localhost:3000/about 해도 hello 만 보임. 즉, 여전히 '/' 이것과 매치 됨.
-// 여전히 Root 를 render 하고 있음
-// 왜냐하면 아직도 '/' 안에 있고 그에 about 을 더해주고 있는 셈
+// 😥 ErrorElement가 없다면 Home elelment가 충돌했을 때
+// Unhandled Thrown Error! 화면에 나오면서 앱이 죽어버림
+// 이건 우리가 development 모드라서 보이는 에러이고
+// development 모드가 아니라면 그냥 빈 화면이 보일 것임
+// Home이든 About이든 볼 수 없음
 
-// 그래서 무엇을 해야 하냐면 react-router-dom 에게 Root 의 자식을 render 하길 원한다라고 알려줘야 함 => Root 폴더로 가서
-// Root의 자식을 render 하길 원한다면?
-
-// Root 안으로 가서 <Outlet /> 이라는 컴포넌트 적어준다
-// 이렇게 하면 예를 들어, /about 페이지로 가면 무슨 일이 일어나냐면
-// react router가 이 Root를 보고 Root를 render하고
-// 네가 /about으로 가려고 하는 상황이기 때문에
-// react router는 Oulet이라는을 About으로 대체하려고 한다
-
-// 📌 다시 한번 설명!
-// 네가 /about으로 가고자 하면, 넌 path: '/', 이 URL로 매치가 됨
-// 그러면 react router는 Root를 Render 하게 됨
-// 그런데 Root한테 자식이 있기 때문에
-// 우리는 Oulet이라는 컴포넌트를 사용함
-// react router는 이 Oulet 컴포넌트를 통해서 URL을 보게 되는데
-// 예를 들면, /about 이라면, Root를 render하고 About도 render하게 됨
-// 여기서 뭘하냐면, Oulet 을 네가 render 하고자 하는 route로 바꿔서 render 한 것
-// 그것이 자식 route이다
+// 📍 이 ErrorComponent 가 멋진 이유는
+// 다른 컴포넌트들을 또 다른 컴포넌트에서 발행하는 문제로부터 보호해준다
+// 예를 들어 Home 이 충돌하는 것이 끝나면
+// 문제가 다른 곳으로 퍼져나가지 않도록 해서, About 페이지 보는 것을 막지 않음
+// 👍 이 errorElement 를 모든 route 들에 다 적용할 수 있다
+// 이 ErrorElement 는 버전 5 에서는 없었음
