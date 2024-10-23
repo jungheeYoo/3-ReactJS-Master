@@ -112,18 +112,69 @@
 // // 여기서 뭘하냐면, Oulet 을 네가 render 하고자 하는 route로 바꿔서 render 한 것
 // // 그것이 자식 route이다
 
-//////////////////////////////////////////////
-// ✅ 4-3. errorElement
+// //////////////////////////////////////////////
+// // ✅ 4-3. errorElement
 
-// 라우터 버전 6는 route 들이 errorElement 를 가진다
-// 이것은 우리의 컴포넌트에 에러가 발생해서 충돌하거나
-// 컴포넌트의 위치를 찾지 못할 때 쓰는 것
-// 에러 컴포넌트를 쓰는 이유는 다른 컴포넌트들을 또 다른 컴포넌트에서
-// 발생하는 문제로부터 보호해주기 때문
+// // 라우터 버전 6는 route 들이 errorElement 를 가진다
+// // 이것은 우리의 컴포넌트에 에러가 발생해서 충돌하거나
+// // 컴포넌트의 위치를 찾지 못할 때 쓰는 것
+// // 에러 컴포넌트를 쓰는 이유는 다른 컴포넌트들을 또 다른 컴포넌트에서
+// // 발생하는 문제로부터 보호해주기 때문
 
-// Root element path 에 에러를 추가할 수 있다
-// 이것은 아무 자식도 발견되지 않았을 때 나타남 ex) http://localhost:3000/dfkj
-// 또한 컴포넌트가 충돌할 때도 작동함
+// // Root element path 에 에러를 추가할 수 있다
+// // 이것은 아무 자식도 발견되지 않았을 때 나타남 ex) http://localhost:3000/dfkj
+// // 또한 컴포넌트가 충돌할 때도 작동함
+
+// import { createBrowserRouter } from 'react-router-dom';
+// import About from './screens/About';
+// import Home from './screens/Home';
+// import Root from './Root';
+// import NotFound from './screens/NotFound';
+// import ErrorComponent from './components/ErrorComponent';
+
+// const router = createBrowserRouter([
+//   {
+//     path: '/',
+//     element: <Root />,
+//     children: [
+//       {
+//         path: '',
+//         element: <Home />,
+//         errorElement: <ErrorComponent />,
+//       },
+//       {
+//         path: 'about',
+//         element: <About />,
+//       },
+//     ],
+//     errorElement: <NotFound />,
+//   },
+// ]);
+
+// export default router;
+
+// // 😥 ErrorElement가 없다면 Home elelment가 충돌했을 때
+// // Unhandled Thrown Error! 화면에 나오면서 앱이 죽어버림
+// // 이건 우리가 development 모드라서 보이는 에러이고
+// // development 모드가 아니라면 그냥 빈 화면이 보일 것임
+// // Home이든 About이든 볼 수 없음
+
+// // 📍 이 ErrorComponent 가 멋진 이유는
+// // 다른 컴포넌트들을 또 다른 컴포넌트에서 발행하는 문제로부터 보호해준다
+// // 예를 들어 Home 이 충돌하는 것이 끝나면
+// // 문제가 다른 곳으로 퍼져나가지 않도록 해서, About 페이지 보는 것을 막지 않음
+// // 👍 이 errorElement 를 모든 route 들에 다 적용할 수 있다
+// // 이 ErrorElement 는 버전 5 에서는 없었음
+
+////////////////////////////////////////////////
+// ✅ 4-5. useParams
+// 유저 목록 가져와서 자세한 정보 페이지 연결
+
+// 이 화면을 우리의 Router에 추가
+// '/' 의 새로운 자식 만듦
+// path: 'users/:userId',
+// react router 에게 이 URL 이 동적 파라미터를 가질 수 있다는 것을 알려줌
+// URL 이 파라미터를 가진다는 것
 
 import { createBrowserRouter } from 'react-router-dom';
 import About from './screens/About';
@@ -131,7 +182,9 @@ import Home from './screens/Home';
 import Root from './Root';
 import NotFound from './screens/NotFound';
 import ErrorComponent from './components/ErrorComponent';
+import User from './screens/users/User';
 
+// react-router한테 이 URL이 dynamic parameter를 가질 수 있다는 것을 알려줌
 const router = createBrowserRouter([
   {
     path: '/',
@@ -146,6 +199,36 @@ const router = createBrowserRouter([
         path: 'about',
         element: <About />,
       },
+      /*
+        // 😎 지금 우리는 
+        // 여기서는 만약에 유저가 /users만 있는 경로로 간다면
+        // Not Found를 보여주고 싶음
+        // 다시 말해 여기에 유저를 위한 것은 없다 그냥 Not Found 페이지
+        // 우리의 경우 유저들이 /users로 갈 수 없고
+        // /users/2 같은 곳만 갈 수 있도록 연결 함
+      */
+      {
+        path: 'users/:userId',
+        element: <User />,
+      },
+      /* {
+        // 🤔 그런데 왜 이런식으로 하지 않았는지 ?
+        // 만약에 유저가 /users로 가서 뭔가를 볼 수 있다면 이런식으로 해야 함
+        // 왜냐하면 여기서 너는 element 하나를 render 할 수 있다
+        // 지금 /users 가면 아무것도 안나옴 
+        // 만약에 유저가 /users 이쪽에 오면 뭔가 보여주고 싶다면
+        // 이 방법으로 해야함
+        // 그러면 /users에서 element를 redner 할 수 있다
+        // 그리고 /users/:userId도 render 할 수 있다
+        path: 'users',
+        element
+        children: [
+          {
+            path: ':userId',
+            element: <User />,
+          },
+        ],
+      }, */
     ],
     errorElement: <NotFound />,
   },
@@ -153,15 +236,9 @@ const router = createBrowserRouter([
 
 export default router;
 
-// 😥 ErrorElement가 없다면 Home elelment가 충돌했을 때
-// Unhandled Thrown Error! 화면에 나오면서 앱이 죽어버림
-// 이건 우리가 development 모드라서 보이는 에러이고
-// development 모드가 아니라면 그냥 빈 화면이 보일 것임
-// Home이든 About이든 볼 수 없음
-
-// 📍 이 ErrorComponent 가 멋진 이유는
-// 다른 컴포넌트들을 또 다른 컴포넌트에서 발행하는 문제로부터 보호해준다
-// 예를 들어 Home 이 충돌하는 것이 끝나면
-// 문제가 다른 곳으로 퍼져나가지 않도록 해서, About 페이지 보는 것을 막지 않음
-// 👍 이 errorElement 를 모든 route 들에 다 적용할 수 있다
-// 이 ErrorElement 는 버전 5 에서는 없었음
+// 🔶 /users/:userId 로 가면 세 가지가 매칭 됨
+// path: '/', 에 매칭되니 Root 를 render 함
+// 이것은 Outlet 을 render 함
+// 그 다음 그건 path: 'users/:userId', 를 찾게 되고, 그러면 userId 있다는 것을 포착함
+// http://localhost:3000/users/1 이렇게 매칭 됨
+// 그리고 유저를 render 하게 됨
