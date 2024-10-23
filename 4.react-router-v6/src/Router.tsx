@@ -166,15 +166,90 @@
 // // 👍 이 errorElement 를 모든 route 들에 다 적용할 수 있다
 // // 이 ErrorElement 는 버전 5 에서는 없었음
 
-////////////////////////////////////////////////
-// ✅ 4-5. useParams
-// 유저 목록 가져와서 자세한 정보 페이지 연결
+// ////////////////////////////////////////////////
+// // ✅ 4-5. useParams
+// // 유저 목록 가져와서 자세한 정보 페이지 연결
 
-// 이 화면을 우리의 Router에 추가
-// '/' 의 새로운 자식 만듦
-// path: 'users/:userId',
-// react router 에게 이 URL 이 동적 파라미터를 가질 수 있다는 것을 알려줌
-// URL 이 파라미터를 가진다는 것
+// // 이 화면을 우리의 Router에 추가
+// // '/' 의 새로운 자식 만듦
+// // path: 'users/:userId',
+// // react router 에게 이 URL 이 동적 파라미터를 가질 수 있다는 것을 알려줌
+// // URL 이 파라미터를 가진다는 것
+
+// import { createBrowserRouter } from 'react-router-dom';
+// import About from './screens/About';
+// import Home from './screens/Home';
+// import Root from './Root';
+// import NotFound from './screens/NotFound';
+// import ErrorComponent from './components/ErrorComponent';
+// import User from './screens/users/User';
+
+// // react-router한테 이 URL이 dynamic parameter를 가질 수 있다는 것을 알려줌
+// const router = createBrowserRouter([
+//   {
+//     path: '/',
+//     element: <Root />,
+//     children: [
+//       {
+//         path: '',
+//         element: <Home />,
+//         errorElement: <ErrorComponent />,
+//       },
+//       {
+//         path: 'about',
+//         element: <About />,
+//       },
+//       /*
+//         // 😎 지금 우리는
+//         // 여기서는 만약에 유저가 /users만 있는 경로로 간다면
+//         // Not Found를 보여주고 싶음
+//         // 다시 말해 여기에 유저를 위한 것은 없다 그냥 Not Found 페이지
+//         // 우리의 경우 유저들이 /users로 갈 수 없고
+//         // /users/2 같은 곳만 갈 수 있도록 연결 함
+//       */
+//       {
+//         path: 'users/:userId',
+//         element: <User />,
+//       },
+//       /* {
+//         // 🤔 그런데 왜 이런식으로 하지 않았는지 ?
+//         // 만약에 유저가 /users로 가서 뭔가를 볼 수 있다면 이런식으로 해야 함
+//         // 왜냐하면 여기서 너는 element 하나를 render 할 수 있다
+//         // 지금 /users 가면 아무것도 안나옴
+//         // 만약에 유저가 /users 이쪽에 오면 뭔가 보여주고 싶다면
+//         // 이 방법으로 해야함
+//         // 그러면 /users에서 element를 redner 할 수 있다
+//         // 그리고 /users/:userId도 render 할 수 있다
+//         path: 'users',
+//         element
+//         children: [
+//           {
+//             path: ':userId',
+//             element: <User />,
+//           },
+//         ],
+//       }, */
+//     ],
+//     errorElement: <NotFound />,
+//   },
+// ]);
+
+// export default router;
+
+// // 🔶 /users/:userId 로 가면 세 가지가 매칭 됨
+// // path: '/', 에 매칭되니 Root 를 render 함
+// // 이것은 Outlet 을 render 함
+// // 그 다음 그건 path: 'users/:userId', 를 찾게 되고, 그러면 userId 있다는 것을 포착함
+// // http://localhost:3000/users/1 이렇게 매칭 됨
+// // 그리고 유저를 render 하게 됨
+
+////////////////////////////////////////////////
+// ✅ 4-6. Outlet
+
+// 모든 Outlet 컴포넌트는 만약 있다면 Route 의 자식들을 render 함
+// react router 의 역할은 Root 를 render 하는건데
+// Root 한테 자식이 있으니 Outlet 을 Root 의 자식으로 대체 시킴
+// 예를 들면, Root 파일에 <Outlet /> 이 <About /> 바뀌어서 들어간다
 
 import { createBrowserRouter } from 'react-router-dom';
 import About from './screens/About';
@@ -183,8 +258,18 @@ import Root from './Root';
 import NotFound from './screens/NotFound';
 import ErrorComponent from './components/ErrorComponent';
 import User from './screens/users/User';
+import Followers from './screens/users/Followers';
 
-// react-router한테 이 URL이 dynamic parameter를 가질 수 있다는 것을 알려줌
+// 🔶 Followers 을 user 스크린의 자식으로 추가
+// 이러면 Outlet 이 활성화 된다는 뜻이다
+// 이제 user 에 가서 Link 하나를 추가
+
+// path: 'followers', 여기 있다는 것은 User 자식 안에 있다는 것이고
+// User를 render하면서 followers도 User 화면 안의 Outlet에 넣을 것임
+// 이렇게 하면 라우터가 두 개가 필요 없고 그냥 자식을 정의하면 됨
+// 그리고 Outlet을 render하면 됨
+// 그리고 위치도 컨드롤 할 수 있다
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -199,46 +284,19 @@ const router = createBrowserRouter([
         path: 'about',
         element: <About />,
       },
-      /*
-        // 😎 지금 우리는 
-        // 여기서는 만약에 유저가 /users만 있는 경로로 간다면
-        // Not Found를 보여주고 싶음
-        // 다시 말해 여기에 유저를 위한 것은 없다 그냥 Not Found 페이지
-        // 우리의 경우 유저들이 /users로 갈 수 없고
-        // /users/2 같은 곳만 갈 수 있도록 연결 함
-      */
       {
         path: 'users/:userId',
         element: <User />,
-      },
-      /* {
-        // 🤔 그런데 왜 이런식으로 하지 않았는지 ?
-        // 만약에 유저가 /users로 가서 뭔가를 볼 수 있다면 이런식으로 해야 함
-        // 왜냐하면 여기서 너는 element 하나를 render 할 수 있다
-        // 지금 /users 가면 아무것도 안나옴 
-        // 만약에 유저가 /users 이쪽에 오면 뭔가 보여주고 싶다면
-        // 이 방법으로 해야함
-        // 그러면 /users에서 element를 redner 할 수 있다
-        // 그리고 /users/:userId도 render 할 수 있다
-        path: 'users',
-        element
         children: [
           {
-            path: ':userId',
-            element: <User />,
+            path: 'followers',
+            element: <Followers />,
           },
         ],
-      }, */
+      },
     ],
     errorElement: <NotFound />,
   },
 ]);
 
 export default router;
-
-// 🔶 /users/:userId 로 가면 세 가지가 매칭 됨
-// path: '/', 에 매칭되니 Root 를 render 함
-// 이것은 Outlet 을 render 함
-// 그 다음 그건 path: 'users/:userId', 를 찾게 되고, 그러면 userId 있다는 것을 포착함
-// http://localhost:3000/users/1 이렇게 매칭 됨
-// 그리고 유저를 render 하게 됨
