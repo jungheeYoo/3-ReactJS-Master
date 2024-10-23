@@ -17,8 +17,8 @@
 // 에러 : users는 비어있는 array인데 첫 번째 아이템 불러와서 name에 접근
 
 function Home() {
-  const users: any = [];
-  return <h1>{users[0].name}Home</h1>;
-  // return <h1>Home</h1>;
+  // const users: any = [];
+  // return <h1>{users[0].name}Home</h1>;
+  return <h1>Home</h1>;
 }
 export default Home;
