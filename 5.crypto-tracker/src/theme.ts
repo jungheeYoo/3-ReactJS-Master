@@ -18,7 +18,7 @@ import { DefaultTheme } from 'styled-components';
 export const theme: DefaultTheme = {
   bgColor: '#2f3640',
   textColor: '#f5f6fa',
-  accentColor: '#4cd137',
+  accentColor: '#9B59B6',
 };
 
 // Theme 은 ThemeProvider 에 의해 주어진 것이고,

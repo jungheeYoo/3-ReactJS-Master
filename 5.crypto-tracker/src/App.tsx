@@ -10,7 +10,7 @@
 // export default App;
 
 ///////////////////////////////////////////////
-// ✅ 5-1. Styles
+// ✅ 5-1~2. Styles
 // ✅ 전체 도큐먼트에 적용하기 위한 CSS 스타일 - 기본 값
 
 // createGlobalStyle :
