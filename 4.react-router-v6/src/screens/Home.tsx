@@ -56,3 +56,42 @@ export default Home;
 
 // 이렇게 이동함
 // http://localhost:3000/users/1
+
+////////////////////////////////////////////////
+// ✅ 4-8. Extras, useSearchParams
+
+// 이 훅은 너의 search 파라미터를 수정하게 도와줌
+// 또는 네 URL 에서 search 파라미터를 읽어내는 것을 도와줌
+// 검색하거나, 필터하거나, pagination 하고 싶을 때 그런 정보들을 URL 에 넣음
+// 그것들을 search 파라미터라고 함
+
+// useSearchParams() 하면 array 를 하나 제공
+// array 의 첫 번째 아이템은 search 파라미터를 읽기 위한 것
+// 다른 것은 search 파라미터를 set 하기 위한 함수, 수정하는 것
+
+// import { Link, useSearchParams } from 'react-router-dom';
+// import { users } from '../db';
+
+// function Home() {
+//   const [readSearchParms, setSearchParams] = useSearchParams();
+//   // console.log(readSearchParms.get('geo'));
+//   setTimeout(() => {
+//     setSearchParams({
+//       day: 'today',
+//       tomorrow: '123',
+//     });
+//   }, 3000);
+//   return (
+//     <div>
+//       <h1>Users</h1>
+//       <ul>
+//         {users.map((user) => (
+//           <li key={user.id}>
+//             <Link to={`/users/${user.id}`}>{user.name}</Link>
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// }
+// export default Home;
