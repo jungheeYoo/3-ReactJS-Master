@@ -189,28 +189,168 @@
 // // 타입스크립트는 info, priceInfo 가 빈 object 라고 생각함
 // // 타입스크립트에게 설명해줘야 함
 
-/////////////////////////////////////////////
-// ✅ 5-6. Data Types
-// ✅ 타입스크립트에게 데이터 설명
-// 타입스크립트는 info, priceInfo 가 빈 object 라고 생각함
-// 타입스크립트에게 설명해줘야 함
+// /////////////////////////////////////////////
+// // ✅ 5-6. Data Types
+// // ✅ 타입스크립트에게 데이터 설명
+// // 타입스크립트는 info, priceInfo 가 빈 object 라고 생각함
+// // 타입스크립트에게 설명해줘야 함
 
-// 🔶 방법
-// infoData, priceData 를 가각 console.log 함
-// console에서 마우스 오른쪽 클릭 해서 store object as global varible 누름
-// 그럼 이 object 데이터가 temp1에 저장 됨
-// 그럼 우리가 infoData가 필요할 때 temp1 에 접근하면 된다
-// 여기 있는 데이터를 사용하기 위해서는 이 과정이 필요하다
-// 그리고 console에 Object.keys(temp1) 입력
-// console에 Object.keys(temp1).join() 으로 string 으로 만듦
-// Object.values(temp1) values 받아오기
-// value 를 받아왔지만 이 자체를 쓰려는게 아니라 타입이 필요하니
-// Object.values(temp1).map(v => typeof v).join() values의 type 받아오기
-// object로 이루어진 array
+// // 🔶 방법
+// // infoData, priceData 를 가각 console.log 함
+// // console에서 마우스 오른쪽 클릭 해서 store object as global varible 누름
+// // 그럼 이 object 데이터가 temp1에 저장 됨
+// // 그럼 우리가 infoData가 필요할 때 temp1 에 접근하면 된다
+// // 여기 있는 데이터를 사용하기 위해서는 이 과정이 필요하다
+// // 그리고 console에 Object.keys(temp1) 입력
+// // console에 Object.keys(temp1).join() 으로 string 으로 만듦
+// // Object.values(temp1) values 받아오기
+// // value 를 받아왔지만 이 자체를 쓰려는게 아니라 타입이 필요하니
+// // Object.values(temp1).map(v => typeof v).join() values의 type 받아오기
+// // object로 이루어진 array
+
+// import { useEffect, useState } from 'react';
+// import { useLocation, useParams } from 'react-router';
+// import styled from 'styled-components';
+
+// const Title = styled.h1`
+//   font-size: 48px;
+//   color: ${(props) => props.theme.accentColor};
+// `;
+
+// const Loader = styled.span`
+//   text-align: center;
+//   display: block;
+// `;
+
+// const Container = styled.div`
+//   padding: 0px 20px;
+//   max-width: 480px;
+//   margin: 0 auto;
+// `;
+
+// const Header = styled.header`
+//   height: 15vh;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
+
+// interface RouteParams {
+//   coinId: string;
+// }
+// interface RouteState {
+//   name: string;
+// }
+
+// // ✨ 타입스크립트 코드 베이스를 보면 interface 이름 지을 때 앞에 I를 붙인다
+// interface InfoData {
+//   id: string;
+//   name: string;
+//   symbol: string;
+//   rank: number;
+//   is_new: boolean;
+//   is_active: boolean;
+//   type: string;
+//   description: string;
+//   message: string;
+//   open_source: boolean;
+//   started_at: string;
+//   development_status: string;
+//   hardware_wallet: boolean;
+//   proof_type: string;
+//   org_structure: string;
+//   hash_algorithm: string;
+//   first_data_at: string;
+//   last_data_at: string;
+// }
+
+// interface PriceData {
+//   id: string;
+//   name: string;
+//   symbol: string;
+//   rank: number;
+//   circulating_supply: number;
+//   total_supply: number;
+//   max_supply: number;
+//   beta_value: number;
+//   first_data_at: string;
+//   last_updated: string;
+//   quotes: {
+//     USD: {
+//       ath_date: string;
+//       ath_price: number;
+//       market_cap: number;
+//       market_cap_change_24h: number;
+//       percent_change_1h: number;
+//       percent_change_1y: number;
+//       percent_change_6h: number;
+//       percent_change_7d: number;
+//       percent_change_12h: number;
+//       percent_change_15m: number;
+//       percent_change_24h: number;
+//       percent_change_30d: number;
+//       percent_change_30m: number;
+//       percent_from_price_ath: number;
+//       price: number;
+//       volume_24h: number;
+//       volume_24h_change_24h: number;
+//     };
+//   };
+// }
+
+// function Coin() {
+//   const [loading, setLoading] = useState(true);
+//   const { coinId } = useParams<RouteParams>();
+//   const { state } = useLocation<RouteState>();
+//   const [info, setInfo] = useState<InfoData>();
+//   const [priceInfo, setPriceInfo] = useState<PriceData>();
+//   setLoading(false);
+//   // API로부터 데이터를 request 한 후에 setLoading 을 false로 바꿔줘야 함
+//   useEffect(() => {
+//     (async () => {
+//       const infoData = await (
+//         await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
+//       ).json();
+//       console.log(infoData);
+//       const priceData = await (
+//         await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
+//       ).json();
+//       console.log(priceData);
+//       setInfo(infoData);
+//       setPriceInfo(priceData);
+//     })();
+//   }, [coinId]);
+//   return (
+//     <Container>
+//       <Header>
+//         <Title>{state?.name || 'Loading...'}</Title>
+//       </Header>
+//       {loading ? <Loader>Loading...</Loader> : null}
+//     </Container>
+//   );
+// }
+// export default Coin;
+
+/////////////////////////////////////////////
+// ✅ 5-7. Nested Routes part One
+// ✅ screen 을 paint 하기
+
+// 🔶 react router 에 있는 nested router 사용
+// ✨ Nested Routes 혹은 nested route 는 route 안에 있는 또 다른 route 이다
+// 웹사이트에서 탭을 사용할 때 많이 도와줄 것임
+// 스크린 안에 많은 섹션이 나뉘어진 곳에서도 유용
+
+// 탭을 사용해서 만드는데 이 탭들을 State 에서 컨트롤 (할 수 있음) 하는 것 대신에
+// URL 에서 컨트롤 한다. 더 사용성이 높음
+// 이렇게 만들면 유저들이 스크린과 차트에 바로 접속할 수 있다
+// http://localhost:3000/btc-bitcoin/price
+// 이렇게 오면 스크린으로 오게 되고 price 탭이 선택되어 있을 것임
 
 import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router';
+import { Switch, Route, useLocation, useParams } from 'react-router';
 import styled from 'styled-components';
+import Price from './Price';
+import Chart from './Chart';
 
 const Title = styled.h1`
   font-size: 48px;
@@ -235,14 +375,35 @@ const Header = styled.header`
   align-items: center;
 `;
 
+const Overview = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 20px;
+  border-radius: 10px;
+`;
+const OverviewItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  span:first-child {
+    font-size: 10px;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+`;
+const Description = styled.p`
+  margin: 20px 0px;
+`;
+
 interface RouteParams {
   coinId: string;
 }
 interface RouteState {
   name: string;
 }
-
-// ✨ 타입스크립트 코드 베이스를 보면 interface 이름 지을 때 앞에 I를 붙인다
 interface InfoData {
   id: string;
   name: string;
@@ -263,7 +424,6 @@ interface InfoData {
   first_data_at: string;
   last_data_at: string;
 }
-
 interface PriceData {
   id: string;
   name: string;
@@ -304,28 +464,76 @@ function Coin() {
   const { state } = useLocation<RouteState>();
   const [info, setInfo] = useState<InfoData>();
   const [priceInfo, setPriceInfo] = useState<PriceData>();
-  setLoading(false);
-  // API로부터 데이터를 request 한 후에 setLoading 을 false로 바꿔줘야 함
   useEffect(() => {
     (async () => {
       const infoData = await (
         await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
       ).json();
-      console.log(infoData);
       const priceData = await (
         await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
       ).json();
-      console.log(priceData);
       setInfo(infoData);
       setPriceInfo(priceData);
+      setLoading(false); // API 로부터 데이터를 request 한 후에 setLoading false 하기
     })();
   }, [coinId]);
+  // 컴포넌트 시작에서 한 번만 코드를 실행하고 싶다면 [] 이렇게 해줘야 한다
+  // 이곳에 무언가를 넣으면 변하게 되고 변하면 다시 실행될텐데 우린 그것을 원하지 않는다
+  // 하지만 hooks 는 최선의 성능을 위해서는 hook 안에서 사용한 것은 그게 어떤 것이든
+  // 여기에 dependency 를 넣어야한다고 함
+  // 그래서 이 hooks 에서 coinId 라고 불리는 것을 사용하고 있다고 알려줌
+  // 만약 coinId 가 변한다면 이 코드들이 다시 실행될 것임
+  // 하지먄 coinId 는 URL 에 위치에 있기 때문에 절대 변하지 않음
+  // coinId 는 절대 바뀌지 않기 때문에 이 모든 API request 가 한 번만 이뤄질 것임
   return (
     <Container>
       <Header>
-        <Title>{state?.name || 'Loading...'}</Title>
+        <Title>
+          {state?.name ? state.name : loading ? 'Loading...' : info?.name}
+        </Title>
       </Header>
-      {loading ? <Loader>Loading...</Loader> : null}
+      {loading ? (
+        <Loader>Loading...</Loader>
+      ) : (
+        <>
+          <Overview>
+            <OverviewItem>
+              <span>Rank:</span>
+              <span>{info?.rank}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Symbol:</span>
+              <span>${info?.symbol}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Open Source:</span>
+              <span>{info?.open_source ? 'Yes' : 'No'}</span>
+            </OverviewItem>
+          </Overview>
+          <Description>{info?.description}</Description>
+          <Overview>
+            <OverviewItem>
+              <span>Total Suply:</span>
+              <span>{priceInfo?.total_supply}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Max Supply:</span>
+              <span>{priceInfo?.max_supply}</span>
+            </OverviewItem>
+          </Overview>
+          {/* 한 번에 하나의 route만 render 하려고 Switch 사용 */}
+          {/* 또 다른 route를 render 하는 route 만듦 */}
+          {/* route 는 paht 를 가져야 함 */}
+          <Switch>
+            <Route path={`/${coinId}/price`}>
+              <Price />
+            </Route>
+            <Route path={`/${coinId}/chart`}>
+              <Chart />
+            </Route>
+          </Switch>
+        </>
+      )}
     </Container>
   );
 }
