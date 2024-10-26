@@ -250,17 +250,194 @@
 // // Coins screen에서 coin 개별 화면으로 갈 때도 갖고 있던 모든 state가 사라진다
 // // 그러니까 user가 다시 돌아왔을 때마다 API를 다시 fetch해야 하는 것이다
 
+// ///////////////////////////////////////////////
+// // ✅ 5-4. Route States
+// // ✅ 개별 coin 화면 만들기
+
+// // 🔶 Crypto Icon API
+// // 암호화폐를 위한 코인의 아이콘(로고)를 가져와 줄 수 있다
+// // 사용 방법 : API URL 뒤에다가 원하는 코인의 symbol을 써주면 됨
+
+// import { useEffect, useState } from 'react';
+// import { Link } from 'react-router-dom';
+// import styled from 'styled-components';
+
+// const Container = styled.div`
+//   padding: 0px 20px;
+//   max-width: 480px;
+//   margin: 0 auto;
+// `;
+
+// const Header = styled.header`
+//   height: 15vh;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
+
+// const CoinsList = styled.ul``;
+
+// const Coin = styled.li`
+//   background-color: white;
+//   color: ${(props) => props.theme.bgColor};
+//   border-radius: 15px;
+//   margin-bottom: 10px;
+//   a {
+//     display: flex;
+//     align-items: center;
+//     padding: 20px;
+//     transition: color 0.2s ease-in;
+//   }
+//   &:hover {
+//     a {
+//       color: ${(props) => props.theme.accentColor};
+//     }
+//   }
+// `;
+
+// const Title = styled.h1`
+//   font-size: 48px;
+//   color: ${(props) => props.theme.accentColor};
+// `;
+
+// const Loader = styled.span`
+//   text-align: center;
+//   display: block;
+// `;
+
+// const Img = styled.img`
+//   width: 35px;
+//   height: 35px;
+//   margin-right: 10px;
+// `;
+
+// interface CoinInterface {
+//   id: string;
+//   name: string;
+//   symbol: string;
+//   rank: number;
+//   is_new: boolean;
+//   is_active: boolean;
+//   type: string;
+// }
+
+// function Coins() {
+//   const [coins, setCoins] = useState<CoinInterface[]>([]);
+//   const [loading, setLoading] = useState(true);
+//   useEffect(() => {
+//     (async () => {
+//       const response = await fetch('https://api.coinpaprika.com/v1/coins');
+//       const json = await response.json();
+//       setCoins(json.slice(0, 100));
+//       setLoading(false);
+//     })();
+//   }, []);
+//   return (
+//     <Container>
+//       <Header>
+//         <Title>코인</Title>
+//       </Header>
+//       {loading ? (
+//         <Loader>Loading...</Loader>
+//       ) : (
+//         <CoinsList>
+//           {coins.map((coin) => (
+//             <Coin key={coin.id}>
+//               {/* state는 우리가 Coins화면을 열 때와, Coin화면으로 넘어갈 때 생성 됨 */}
+//               {/* <Link to={`/${coin.id}`}> */}
+//               {/* 2️⃣ object도 사용 */}
+//               <Link
+//                 to={{
+//                   // 새로운 object를 열어 준 다음, pathname 씀
+//                   // 그 다음에 State를 보내줄 것임
+//                   // state가 가질 이름으로 코인의 이름, 즉 coin.name 써줌
+//                   // 이렇게 하면 유저는 화면 전환 시에 아무것도 볼 필요가 없게 됨
+//                   pathname: `/${coin.id}`,
+//                   state: { name: coin.name },
+//                 }}
+//               >
+//                 {/* 🌱 coin.name 안에 이미지 넣기 */}
+//                 <Img
+//                   src={`https://static.coinpaprika.com/coin/${coin.id}/logo.png`}
+//                 />
+//                 {coin.name} &rarr;
+//               </Link>
+//             </Coin>
+//           ))}
+//         </CoinsList>
+//       )}
+//     </Container>
+//   );
+// }
+// export default Coins;
+
+// ///////////////////////////////////////////////
+// // ✅ 5-4. Route States
+// // ✅ 개별 coin 화면 만들기
+// // 만약 원한다면 link 를 통해서 다른 화면에 정보를 보낼 수도 있다
+
+// // 🔶 보이지 않는 방식으로(비하인드더씬) 데이터를 어떻게 보내는지 알아보기
+// // 우리는 코인의 name을 알고 있는데, 이것으로도 충분
+// // 여기에서 우리가 가진 name이 'Bitcoin'이고, 이걸 누르면 loading을 볼 수 있다
+// // 로딩이 끝나면, 코인의 name을 다시 한번 받아오게 될 것이다
+// // 이것은 그렇게 좋은 UI가 아니다
+// // 이미 우리가 어떤 name을 누르는지 알고 있는데, 왜 loading을 또 봐야 할까?
+// // 데이터는 이미 브라우저가 갖고 있음. 이미 필요한 데이터를 받았음
+
+// // 우리가 화면을 이동할 때 데이터를 보낸다는 것은
+// // 파라미터를 이용해서 URL 에게 코인에 대한 정보를 넘기는 것이다
+// // 이런 방식으로 한 화면에서 다른 화면으로 정보를 받아올 수도 있다
+// // 그냥 URL 을 쓰는 것 말고 도 다른 옵션은 state 를 사용 하는 것이다
+// // 이 state 란 비아인드 더 씬 소통 같은 것이다
+
+// // 🔶 React Router DOM에서 Link Component를 사용할 때 두 가지 옵션이 있음
+
+// // 1️⃣ 지금 하던 것 처럼 어딘가 이동하기 위해 string을 이용 (바로 접속)
+// // <Link to='/about'>About<Link/>
+// // query argument 사용
+// // <Link to='/courses?sort=name'></Link>
+
+// // 2️⃣ object도 사용할 수 있다 (홈 화면을 통해서 올 때)
+// // 이 object를 통해서 말그대로 데이터 그 자체를 보낼수도 있다
+// // 데이터를 다른 화면으로 보낼 수 있다
+// // 그냥 string 하나만 보내는 것 대신 비하인더씬 데이터를 보냄
+// // 한 화면에서 다른 화면으로 string 또는 state같은 정보들을 보낼 수 있다
+
+// // <Link
+// // to={{
+// // pathname: '/courses',
+// // search: '?sort=name',
+// // hash: '#the-hash, state: {fromDashboard: true}',
+// // }}
+// // ></Link>;
+
+// // state는 우리가 Coins 화면을 열 때와, Coin 화면으로 넘어갈 때 생성 됨
+// // Coins 화면, 즉 Home 에 있을 때와, 뭔가를 클릭해서 이동할 때
+// // state가 home 에서 다른 화면으로 보내지는 거지
+
+// // 만약 누군가가 Coin 페이지로 바로 접속하려고 하면 에러가 남
+// // 왜냐면, state가 생성되려면 Home 화면을 먼저 열어야 하기 때문이다
+// // 우리가 클릭할 때 state가 만들어지니까
+// // 그 다음에야 우리 Coin 화면이 state를 가져서 title도 보여줄 수 있는 것이다
+// // 만약 coinID가 들어간 URL을 이용해 페이지로 바로 접속한다면,
+// // 우리 app상에 state가 만들어지지 못하는 것
+// // 이걸 해결하려면
+// // state가 존재하면? name을 가져오고,
+// // state가 존재하지 않을 때는 Loading을 보여줘
+// // 정리하자면
+// // 시크릿모드에서 상세화면 URL을 바로 치고 들어오면 Loading 화면만 보게 될 것이고
+// // Home 화면을 통해서 들어온다면, 클릭을 통해 생성 된 state를 볼 수 있을 것이다
+// // bnb binance coin으로 바로 접속하면 Loading을 볼 것이고,
+// // 홈 화면을 통해서 bnb binance coin으로 올 때만 coin의 name을 볼 수 있는 것이다
+
 ///////////////////////////////////////////////
-// ✅ 5-4. Route States
-// ✅ 개별 coin 화면 만들기
+// ✅ 5-9. React Query part One
+// react query 는 데이터를 캐시에 저장해둠
 
-// 🔶 Crypto Icon API
-// 암호화폐를 위한 코인의 아이콘(로고)를 가져와 줄 수 있다
-// 사용 방법 : API URL 뒤에다가 원하는 코인의 symbol을 써주면 됨
-
-import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { fetchCoins } from '../api';
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -311,7 +488,7 @@ const Img = styled.img`
   margin-right: 10px;
 `;
 
-interface CoinInterface {
+interface ICoin {
   id: string;
   name: string;
   symbol: string;
@@ -322,43 +499,54 @@ interface CoinInterface {
 }
 
 function Coins() {
-  const [coins, setCoins] = useState<CoinInterface[]>([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    (async () => {
-      const response = await fetch('https://api.coinpaprika.com/v1/coins');
-      const json = await response.json();
-      setCoins(json.slice(0, 100));
-      setLoading(false);
-    })();
-  }, []);
+  // ✨ 리액트 쿼리는 아래 모든 과정을 자동으로 해줌
+  // 이 블록을 통채로 주석 처리
+  //   const [coins, setCoins] = useState<CoinInterface[]>([]);
+  //   const [loading, setLoading] = useState(true);
+  //   useEffect(() => {
+  //     (async () => {
+  //       const response = await fetch('https://api.coinpaprika.com/v1/coins'); // fetcher 함수임
+  //       const json = await response.json(); // fetcher 함수임
+  //       setCoins(json.slice(0, 100));
+  //       setLoading(false);
+  //     })();
+  //   }, []);
+
+  // 🔶 react query 를 사용하기 위한 방법
+  // 1️⃣ fetcher 함수 만들기 (모든 fetcher 함수 넣기)
+  // API 관련된 것들은 component 들과 멀리 떨어져 있도록 함
+  // 만든 컴포넌트들이 fetch 를 하지 않았으면 좋겠어서
+  // 그래서 이 코드들을 api.tsx 파일 안에 넣음
+
+  // 😊 위의 모든 코드를 한 줄의 코드로 변환
+  // useQuery 는 두 가지 argument 필요
+  // 첫 번째 query key (고유식별자)
+  // 두 번째 fetcher 함수 이건 따로 빼줬었음 함수 가져옴
+  // useQuery 는 isLoading 이라고 불리는 boolean 값을 리턴 함
+  // 결론, useQuery hook 은 나의 fetcher 함수를 부르고
+  // fetcher 함수가 Loading 중이라면 react query 는 isLoading 에서 알려준다
+  // useQuery 는 fetcher 함수를 부르고 fetcher 함수가 끝나면
+  // react query 는 json 을 data 에 넣음
+  const { isLoading, data } = useQuery<ICoin[]>(['allCoins'], fetchCoins);
   return (
     <Container>
       <Header>
         <Title>코인</Title>
       </Header>
-      {loading ? (
+      {isLoading ? (
         <Loader>Loading...</Loader>
       ) : (
         <CoinsList>
-          {coins.map((coin) => (
+          {data?.slice(0, 100).map((coin) => (
             <Coin key={coin.id}>
-              {/* state는 우리가 Coins화면을 열 때와, Coin화면으로 넘어갈 때 생성 됨 */}
-              {/* <Link to={`/${coin.id}`}> */}
-              {/* 2️⃣ object도 사용 */}
               <Link
                 to={{
-                  // 새로운 object를 열어 준 다음, pathname 씀
-                  // 그 다음에 State를 보내줄 것임
-                  // state가 가질 이름으로 코인의 이름, 즉 coin.name 써줌
-                  // 이렇게 하면 유저는 화면 전환 시에 아무것도 볼 필요가 없게 됨
                   pathname: `/${coin.id}`,
                   state: { name: coin.name },
                 }}
               >
-                {/* 🌱 coin.name 안에 이미지 넣기 */}
                 <Img
-                  src={`https://static.coinpaprika.com/coin/${coin.id}/logo.png`}
+                  src={`https://cryptoicon-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}
                 />
                 {coin.name} &rarr;
               </Link>
@@ -370,62 +558,3 @@ function Coins() {
   );
 }
 export default Coins;
-
-///////////////////////////////////////////////
-// ✅ 5-4. Route States
-// ✅ 개별 coin 화면 만들기
-// 만약 원한다면 link 를 통해서 다른 화면에 정보를 보낼 수도 있다
-
-// 🔶 보이지 않는 방식으로(비하인드더씬) 데이터를 어떻게 보내는지 알아보기
-// 우리는 코인의 name을 알고 있는데, 이것으로도 충분
-// 여기에서 우리가 가진 name이 'Bitcoin'이고, 이걸 누르면 loading을 볼 수 있다
-// 로딩이 끝나면, 코인의 name을 다시 한번 받아오게 될 것이다
-// 이것은 그렇게 좋은 UI가 아니다
-// 이미 우리가 어떤 name을 누르는지 알고 있는데, 왜 loading을 또 봐야 할까?
-// 데이터는 이미 브라우저가 갖고 있음. 이미 필요한 데이터를 받았음
-
-// 우리가 화면을 이동할 때 데이터를 보낸다는 것은
-// 파라미터를 이용해서 URL 에게 코인에 대한 정보를 넘기는 것이다
-// 이런 방식으로 한 화면에서 다른 화면으로 정보를 받아올 수도 있다
-// 그냥 URL 을 쓰는 것 말고 도 다른 옵션은 state 를 사용 하는 것이다
-// 이 state 란 비아인드 더 씬 소통 같은 것이다
-
-// 🔶 React Router DOM에서 Link Component를 사용할 때 두 가지 옵션이 있음
-
-// 1️⃣ 지금 하던 것 처럼 어딘가 이동하기 위해 string을 이용 (바로 접속)
-// <Link to='/about'>About<Link/>
-// query argument 사용
-// <Link to='/courses?sort=name'></Link>
-
-// 2️⃣ object도 사용할 수 있다 (홈 화면을 통해서 올 때)
-// 이 object를 통해서 말그대로 데이터 그 자체를 보낼수도 있다
-// 데이터를 다른 화면으로 보낼 수 있다
-// 그냥 string 하나만 보내는 것 대신 비하인더씬 데이터를 보냄
-// 한 화면에서 다른 화면으로 string 또는 state같은 정보들을 보낼 수 있다
-
-// <Link
-// to={{
-// pathname: '/courses',
-// search: '?sort=name',
-// hash: '#the-hash, state: {fromDashboard: true}',
-// }}
-// ></Link>;
-
-// state는 우리가 Coins 화면을 열 때와, Coin 화면으로 넘어갈 때 생성 됨
-// Coins 화면, 즉 Home 에 있을 때와, 뭔가를 클릭해서 이동할 때
-// state가 home 에서 다른 화면으로 보내지는 거지
-
-// 만약 누군가가 Coin 페이지로 바로 접속하려고 하면 에러가 남
-// 왜냐면, state가 생성되려면 Home 화면을 먼저 열어야 하기 때문이다
-// 우리가 클릭할 때 state가 만들어지니까
-// 그 다음에야 우리 Coin 화면이 state를 가져서 title도 보여줄 수 있는 것이다
-// 만약 coinID가 들어간 URL을 이용해 페이지로 바로 접속한다면,
-// 우리 app상에 state가 만들어지지 못하는 것
-// 이걸 해결하려면
-// state가 존재하면? name을 가져오고,
-// state가 존재하지 않을 때는 Loading을 보여줘
-// 정리하자면
-// 시크릿모드에서 상세화면 URL을 바로 치고 들어오면 Loading 화면만 보게 될 것이고
-// Home 화면을 통해서 들어온다면, 클릭을 통해 생성 된 state를 볼 수 있을 것이다
-// bnb binance coin으로 바로 접속하면 Loading을 볼 것이고,
-// 홈 화면을 통해서 bnb binance coin으로 올 때만 coin의 name을 볼 수 있는 것이다
