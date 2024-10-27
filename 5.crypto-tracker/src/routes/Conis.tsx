@@ -519,14 +519,16 @@ function Coins() {
   // 그래서 이 코드들을 api.tsx 파일 안에 넣음
 
   // 😊 위의 모든 코드를 한 줄의 코드로 변환
-  // useQuery 는 두 가지 argument 필요
+  // 📍 useQuery 는 두 가지 argument 필요
   // 첫 번째 query key (고유식별자)
   // 두 번째 fetcher 함수 이건 따로 빼줬었음 함수 가져옴
   // useQuery 는 isLoading 이라고 불리는 boolean 값을 리턴 함
-  // 결론, useQuery hook 은 나의 fetcher 함수를 부르고
+  // useQuery hook 은 나의 fetcher 함수를 부르고
   // fetcher 함수가 Loading 중이라면 react query 는 isLoading 에서 알려준다
   // useQuery 는 fetcher 함수를 부르고 fetcher 함수가 끝나면
   // react query 는 json 을 data 에 넣음
+  // fetcher 함수가 isLoading 인지 아닌지 알려주고, fetcher 함수가 끝나면 그 데이터를 넣는다
+  // 그럼 그 데이터에 접근할 수 있다
   const { isLoading, data } = useQuery<ICoin[]>(['allCoins'], fetchCoins);
   return (
     <Container>

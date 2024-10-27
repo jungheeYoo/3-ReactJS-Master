@@ -539,11 +539,281 @@
 // }
 // export default Coin;
 
-/////////////////////////////////////////////
-// ✅ 5-8. Nested Routes part Two
-// ✅ price 와 chart 를 스위치 하는 탭 만들기
+// /////////////////////////////////////////////
+// // ✅ 5-8. Nested Routes part Two
+// // ✅ price 와 chart 를 스위치 하는 탭 만들기
 
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
+// import {
+//   Switch,
+//   Route,
+//   useLocation,
+//   useParams,
+//   useRouteMatch,
+// } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
+// import styled from 'styled-components';
+// import Chart from './Chart';
+// import Price from './Price';
+
+// const Title = styled.h1`
+//   font-size: 48px;
+//   color: ${(props) => props.theme.accentColor};
+// `;
+
+// const Loader = styled.span`
+//   text-align: center;
+//   display: block;
+// `;
+
+// const Container = styled.div`
+//   padding: 0px 20px;
+//   max-width: 480px;
+//   margin: 0 auto;
+// `;
+
+// const Header = styled.header`
+//   height: 15vh;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
+
+// const Overview = styled.div`
+//   display: flex;
+//   justify-content: space-between;
+//   background-color: rgba(0, 0, 0, 0.5);
+//   padding: 10px 20px;
+//   border-radius: 10px;
+// `;
+// const OverviewItem = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+
+//   span:first-child {
+//     font-size: 10px;
+//     font-weight: 400;
+//     text-transform: uppercase;
+//     margin-bottom: 5px;
+//   }
+// `;
+// const Description = styled.p`
+//   margin: 20px 0px;
+// `;
+
+// const Tabs = styled.div`
+//   display: grid;
+//   grid-template-columns: repeat(2, 1fr);
+//   margin: 25px 0px;
+//   gap: 10px;
+// `;
+
+// // 🌱 isActive prop 추가
+// // Tab styled component는 isActive 라고 불리는 prop 가짐
+// // 이건 boolean 형태
+// // prop이 isActive인지 확인하고 만약 Acitve라면 accentColor을 theme 적용
+// // 아니라면 prop의 theme의 색은 그냥 기본 textColor
+// const Tab = styled.span<{ isActive: boolean }>`
+//   text-align: center;
+//   text-transform: uppercase;
+//   font-size: 12px;
+//   font-weight: 400;
+//   background-color: rgba(0, 0, 0, 0.5);
+//   padding: 7px 0px;
+//   border-radius: 10px;
+//   color: ${(props) =>
+//     props.isActive ? props.theme.accentColor : props.theme.textColor};
+//   a {
+//     display: block;
+//   }
+// `;
+
+// interface RouteParams {
+//   coinId: string;
+// }
+// interface RouteState {
+//   name: string;
+// }
+// interface InfoData {
+//   id: string;
+//   name: string;
+//   symbol: string;
+//   rank: number;
+//   is_new: boolean;
+//   is_active: boolean;
+//   type: string;
+//   description: string;
+//   message: string;
+//   open_source: boolean;
+//   started_at: string;
+//   development_status: string;
+//   hardware_wallet: boolean;
+//   proof_type: string;
+//   org_structure: string;
+//   hash_algorithm: string;
+//   first_data_at: string;
+//   last_data_at: string;
+// }
+// interface PriceData {
+//   id: string;
+//   name: string;
+//   symbol: string;
+//   rank: number;
+//   circulating_supply: number;
+//   total_supply: number;
+//   max_supply: number;
+//   beta_value: number;
+//   first_data_at: string;
+//   last_updated: string;
+//   quotes: {
+//     USD: {
+//       ath_date: string;
+//       ath_price: number;
+//       market_cap: number;
+//       market_cap_change_24h: number;
+//       percent_change_1h: number;
+//       percent_change_1y: number;
+//       percent_change_6h: number;
+//       percent_change_7d: number;
+//       percent_change_12h: number;
+//       percent_change_15m: number;
+//       percent_change_24h: number;
+//       percent_change_30d: number;
+//       percent_change_30m: number;
+//       percent_from_price_ath: number;
+//       price: number;
+//       volume_24h: number;
+//       volume_24h_change_24h: number;
+//     };
+//   };
+// }
+
+// function Coin() {
+//   const [loading, setLoading] = useState(true);
+//   const { coinId } = useParams<RouteParams>();
+//   const { state } = useLocation<RouteState>();
+//   const [info, setInfo] = useState<InfoData>();
+//   const [priceInfo, setPriceInfo] = useState<PriceData>();
+
+//   // 🌱 routematch에게 우리가 coinId/price 라는 URL 에 있는지 확인
+//   const priceMatch = useRouteMatch('/:coinId/price');
+//   const chartMatch = useRouteMatch('/:coinId/chart');
+//   useEffect(() => {
+//     (async () => {
+//       const infoData = await (
+//         await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
+//       ).json();
+//       const priceData = await (
+//         await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
+//       ).json();
+//       setInfo(infoData);
+//       setPriceInfo(priceData);
+//       setLoading(false);
+//     })();
+//   }, [coinId]);
+//   return (
+//     <Container>
+//       <Header>
+//         <Title>
+//           {state?.name ? state.name : loading ? 'Loading...' : info?.name}
+//         </Title>
+//       </Header>
+//       {loading ? (
+//         <Loader>Loading...</Loader>
+//       ) : (
+//         <>
+//           <Overview>
+//             <OverviewItem>
+//               <span>Rank:</span>
+//               <span>{info?.rank}</span>
+//             </OverviewItem>
+//             <OverviewItem>
+//               <span>Symbol:</span>
+//               <span>${info?.symbol}</span>
+//             </OverviewItem>
+//             <OverviewItem>
+//               <span>Open Source:</span>
+//               <span>{info?.open_source ? 'Yes' : 'No'}</span>
+//             </OverviewItem>
+//           </Overview>
+//           <Description>{info?.description}</Description>
+//           <Overview>
+//             <OverviewItem>
+//               <span>Total Suply:</span>
+//               <span>{priceInfo?.total_supply}</span>
+//             </OverviewItem>
+//             <OverviewItem>
+//               <span>Max Supply:</span>
+//               <span>{priceInfo?.max_supply}</span>
+//             </OverviewItem>
+//           </Overview>
+
+//           {/* 기본적으로 탭들은 링크가 되어야 함 */}
+//           {/* isActive를 priceMatch나 chartMatch에서 받아옴 */}
+//           {/* 만약 isActve라면, 만약 chartMatch가 null과 같지 않다면  */}
+//           {/* 만약 찾고 있는 URL에 들어와 있다면 object를 받게 됨 반대면 null */}
+//           <Tabs>
+//             <Tab isActive={chartMatch !== null}>
+//               <Link to={`/${coinId}/chart`}>Chart</Link>
+//             </Tab>
+//             <Tab isActive={priceMatch !== null}>
+//               <Link to={`/${coinId}/price`}>Price</Link>
+//             </Tab>
+//           </Tabs>
+
+//           <Switch>
+//             {/* react router 는 여기에 뭐가 들어오는지 알 수 있다 */}
+//             {/* :coinId 변수 사용 */}
+//             <Route path={`/:coinId/price`}>
+//               <Price />
+//             </Route>
+//             <Route path={`/:coinId/chart`}>
+//               <Chart />
+//             </Route>
+//           </Switch>
+//         </>
+//       )}
+//     </Container>
+//   );
+// }
+// export default Coin;
+
+// // 🔶 스위치 탭 만들기
+// // 기본적으로 탭들은 링크가 되어야 함
+// // 여기서 nested route를 사용하기 때문에
+// // onClickEvent 와 같은 것을 갖고 있는 버튼이 필요 없다
+// // 그저 URL을 바꿔주기만 하면 됨
+// // URL을 어떻게 바꿔줘야 하냐면 Link를 사용하면 됨
+
+// // 우리가 원하는 것은 http://localhost:3000/btc-bitcoin/price
+// // 지금 내가 있는 곳 뒤에 /price 나 /chart 를 붙이고 싶다
+// // 이렇게 하기 위해서 우리 URL에서 갖고 있는 coinId를 사용
+// // useParams는 우리의 URL에서 변수의 정보를 가져다 준다
+// // 그래서 내가 어디있는지 알고 싶다면, 여기 뭐가 있는지 알고 싶다면
+// // coinId를 사용
+// // URL 에 따라서 어떤 것을 보여주고 숨길 수 있다
+// // URL 변화 없이 react.js 의 State 만으로 구현할 수도 있었겠지만
+// // 링크를 사용해서 URL을 바꿈으로써 트리거가 되어서 re-render를 할 수 있다
+// // 페이지 자체는 re-render 가 일어나지 않고
+// // Chart 누르면 Chart 보이고 Price는 숨기고 여기 부분만 바뀜
+// // 그리고 유저들이 URL 로 직접 들어올 수 있다
+// // btc-bitcoin 에 들어와서 price 를 눌러서 들어올 필요가 없다
+
+// // 🔶 그럼 어떻게 유저와 소통할 수 있는지?
+// // 어떤 탭을 유저가 클릭했는지 보면서
+// // 예를 들어 만약 유저가 price 를 클릭했다면 ?
+// // 유저와 이것이 현재 선택 된 탭인지 말해주며 소통한다
+// // 그럼 지금 있는 곳의 URL의 대한 정보를 줘야 한다
+
+// // 🔶 useRouteMatch 훅
+// // 유저가 어느 탭에 지금 있는지 알려주면서 유저와 소통하는 방법
+// // 네가 특정한 URL 에 있는지의 여부를 알려줌
+
+///////////////////////////////////////////////
+// ✅ 5-10. React Query part Two
+
+import { useQuery } from 'react-query';
 import {
   Switch,
   Route,
@@ -553,6 +823,7 @@ import {
 } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { fetchCoinInfo, fetchCoinTickers } from '../api';
 import Chart from './Chart';
 import Price from './Price';
 
@@ -590,7 +861,7 @@ const OverviewItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
+  width: 33%;
   span:first-child {
     font-size: 10px;
     font-weight: 400;
@@ -609,22 +880,17 @@ const Tabs = styled.div`
   gap: 10px;
 `;
 
-// 🌱 isActive prop 추가
-// Tab styled component는 isActive 라고 불리는 prop 가짐
-// 이건 boolean 형태
-// prop이 isActive인지 확인하고 만약 Acitve라면 accentColor을 theme 적용
-// 아니라면 prop의 theme의 색은 그냥 기본 textColor
 const Tab = styled.span<{ isActive: boolean }>`
   text-align: center;
   text-transform: uppercase;
   font-size: 12px;
   font-weight: 400;
   background-color: rgba(0, 0, 0, 0.5);
-  padding: 7px 0px;
   border-radius: 10px;
   color: ${(props) =>
     props.isActive ? props.theme.accentColor : props.theme.textColor};
   a {
+    padding: 7px 0px;
     display: block;
   }
 `;
@@ -690,33 +956,57 @@ interface PriceData {
 }
 
 function Coin() {
-  const [loading, setLoading] = useState(true);
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
-  const [info, setInfo] = useState<InfoData>();
-  const [priceInfo, setPriceInfo] = useState<PriceData>();
-
-  // 🌱 routematch에게 우리가 coinId/price 라는 URL 에 있는지 확인
   const priceMatch = useRouteMatch('/:coinId/price');
   const chartMatch = useRouteMatch('/:coinId/chart');
-  useEffect(() => {
-    (async () => {
-      const infoData = await (
-        await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-      ).json();
-      const priceData = await (
-        await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-      ).json();
-      setInfo(infoData);
-      setPriceInfo(priceData);
-      setLoading(false);
-    })();
-  }, [coinId]);
+  // const [loading, setLoading] = useState(true);
+  //   const [info, setInfo] = useState<InfoData>();
+  //   const [priceInfo, setPriceInfo] = useState<PriceData>();
+  //   const priceMatch = useRouteMatch('/:coinId/price');
+  //   const chartMatch = useRouteMatch('/:coinId/chart');
+  //   useEffect(() => {
+  //     (async () => {
+  //       const infoData = await (
+  //         await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
+  //       ).json();
+  //       const priceData = await (
+  //         await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
+  //       ).json();
+  //       setInfo(infoData);
+  //       setPriceInfo(priceData);
+  //       setLoading(false);
+  //     })();
+  //   }, [coinId]);
+  // userQuery hook 사용
+
+  // ✨ 여기 fetcher 함수는 argumnet를 전달 받고 있어서 coinId를 알아야 함
+  // ✨ fetchCoinInfo 함수를 불러와서 URL로부터 오는 coinId를 넣어줌
+  // ✨ 두 가지의 query를 만들었는데 이 둘은 모두 같은 query key를 갖고 있음
+  // 하지만 React query의 query 는 각각의 고유한 id를 갖고 있어야함
+  // React query 가 우리의 query를 인식하는 방법은 key 를 보고 인식한다
+  // React query는 key 를 array 로 감싸서 표현함 ['allCoins'] 이런식
+  // 그래서 이렇게 만듦 ['info', coinId], ['tickers', coinId]
+
+  // React Query 안에는 isLoading이라는 상태가 포함되어 있다
+  // 여기서도 isLoading 이름이 같기 때문에 isLoading: infoLoading 이름을 이렇게 바꿔줌
+  // data 도 마찬가지로 바꿔준다
+  const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
+    ['info', coinId],
+    () => fetchCoinInfo(coinId)
+  );
+  const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
+    ['tickers', coinId],
+    () => fetchCoinTickers(coinId)
+  );
+  // isLoading 은 두 가지로 구성되어 있다. 그래서 새로운 변수를 만듦
+  // loading 은 infoLoading 혹은 tickersLoading 이면 true
+  const loading = infoLoading || tickersLoading;
   return (
     <Container>
       <Header>
         <Title>
-          {state?.name ? state.name : loading ? 'Loading...' : info?.name}
+          {state?.name ? state.name : loading ? 'Loading...' : infoData?.name}
         </Title>
       </Header>
       {loading ? (
@@ -726,33 +1016,29 @@ function Coin() {
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
-              <span>{info?.rank}</span>
+              <span>{infoData?.rank}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
-              <span>${info?.symbol}</span>
+              <span>${infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Open Source:</span>
-              <span>{info?.open_source ? 'Yes' : 'No'}</span>
+              <span>{infoData?.open_source ? 'Yes' : 'No'}</span>
             </OverviewItem>
           </Overview>
-          <Description>{info?.description}</Description>
+          <Description>{infoData?.description}</Description>
           <Overview>
             <OverviewItem>
               <span>Total Suply:</span>
-              <span>{priceInfo?.total_supply}</span>
+              <span>{tickersData?.total_supply}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Max Supply:</span>
-              <span>{priceInfo?.max_supply}</span>
+              <span>{tickersData?.max_supply}</span>
             </OverviewItem>
           </Overview>
 
-          {/* 기본적으로 탭들은 링크가 되어야 함 */}
-          {/* isActive를 priceMatch나 chartMatch에서 받아옴 */}
-          {/* 만약 isActve라면, 만약 chartMatch가 null과 같지 않다면  */}
-          {/* 만약 찾고 있는 URL에 들어와 있다면 object를 받게 됨 반대면 null */}
           <Tabs>
             <Tab isActive={chartMatch !== null}>
               <Link to={`/${coinId}/chart`}>Chart</Link>
@@ -763,8 +1049,6 @@ function Coin() {
           </Tabs>
 
           <Switch>
-            {/* react router 는 여기에 뭐가 들어오는지 알 수 있다 */}
-            {/* :coinId 변수 사용 */}
             <Route path={`/:coinId/price`}>
               <Price />
             </Route>
@@ -778,34 +1062,3 @@ function Coin() {
   );
 }
 export default Coin;
-
-// 🔶 스위치 탭 만들기
-// 기본적으로 탭들은 링크가 되어야 함
-// 여기서 nested route를 사용하기 때문에
-// onClickEvent 와 같은 것을 갖고 있는 버튼이 필요 없다
-// 그저 URL을 바꿔주기만 하면 됨
-// URL을 어떻게 바꿔줘야 하냐면 Link를 사용하면 됨
-
-// 우리가 원하는 것은 http://localhost:3000/btc-bitcoin/price
-// 지금 내가 있는 곳 뒤에 /price 나 /chart 를 붙이고 싶다
-// 이렇게 하기 위해서 우리 URL에서 갖고 있는 coinId를 사용
-// useParams는 우리의 URL에서 변수의 정보를 가져다 준다
-// 그래서 내가 어디있는지 알고 싶다면, 여기 뭐가 있는지 알고 싶다면
-// coinId를 사용
-// URL 에 따라서 어떤 것을 보여주고 숨길 수 있다
-// URL 변화 없이 react.js 의 State 만으로 구현할 수도 있었겠지만
-// 링크를 사용해서 URL을 바꿈으로써 트리거가 되어서 re-render를 할 수 있다
-// 페이지 자체는 re-render 가 일어나지 않고
-// Chart 누르면 Chart 보이고 Price는 숨기고 여기 부분만 바뀜
-// 그리고 유저들이 URL 로 직접 들어올 수 있다
-// btc-bitcoin 에 들어와서 price 를 눌러서 들어올 필요가 없다
-
-// 🔶 그럼 어떻게 유저와 소통할 수 있는지?
-// 어떤 탭을 유저가 클릭했는지 보면서
-// 예를 들어 만약 유저가 price 를 클릭했다면 ?
-// 유저와 이것이 현재 선택 된 탭인지 말해주며 소통한다
-// 그럼 지금 있는 곳의 URL의 대한 정보를 줘야 한다
-
-// 🔶 useRouteMatch 훅
-// 유저가 어느 탭에 지금 있는지 알려주면서 유저와 소통하는 방법
-// 네가 특정한 URL 에 있는지의 여부를 알려줌
