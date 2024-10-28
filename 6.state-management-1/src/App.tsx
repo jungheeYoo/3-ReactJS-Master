@@ -3,7 +3,7 @@
 
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import Router from './Router';
-import { ReactQueryDevtools } from 'react-query/devtools';
+// import { ReactQueryDevtools } from 'react-query/devtools';
 import { darkTheme, lightTheme } from './theme';
 import { useState } from 'react';
 
@@ -90,7 +90,7 @@ function App() {
         <button onClick={toggleDark}>Toggle Mode</button>
         <GlobalStyle />
         <Router />
-        <ReactQueryDevtools initialIsOpen={true} />
+        {/* <ReactQueryDevtools initialIsOpen={true} /> */}
       </ThemeProvider>
     </>
   );
