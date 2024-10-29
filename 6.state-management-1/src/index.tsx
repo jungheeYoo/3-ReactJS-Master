@@ -51,6 +51,7 @@
 
 //////////////////////////////////////////////////
 // ✅ 6-2. Introduction to Recoil
+// ✅ atom 설치, 기본 설정
 
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from 'react-query';

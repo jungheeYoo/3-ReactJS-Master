@@ -110,6 +110,7 @@
 
 //////////////////////////////////////////////////
 // ✅ 6-2. Introduction to Recoil
+// ✅ atom 설치, 기본 설정
 
 import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-query';

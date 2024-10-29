@@ -58,6 +58,7 @@
 
 //////////////////////////////////////////////////
 // ✅ 6-2. Introduction to Recoil
+// ✅ atom 설치, 기본 설정
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Coins from './routes/coins';

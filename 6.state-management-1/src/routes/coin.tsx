@@ -232,6 +232,7 @@
 
 //////////////////////////////////////////////////
 // ✅ 6-2. Introduction to Recoil
+// ✅ atom 설치, 기본 설정
 
 // import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';

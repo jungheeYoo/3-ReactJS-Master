@@ -214,6 +214,7 @@
 
 //////////////////////////////////////////////////
 // ✅ 6-2. Introduction to Recoil
+// ✅ atom 설치, 기본 설정
 
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import Router from './Router';
