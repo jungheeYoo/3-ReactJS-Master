@@ -278,128 +278,177 @@
 
 // export default ToDoList;
 
-/////////////////////////////////////////////////////////
-// ✅ 6-9. Custom Validation
-// ✅ form submit 상황을 가정해서 에러 설정해보기
-// ✅ 어떻게 에러를 발생시킬 수 있는지?
-// 커스텀 유효성 검사
+// /////////////////////////////////////////////////////////
+// // ✅ 6-9. Custom Validation
+// // ✅ form submit 상황을 가정해서 에러 설정해보기
+// // ✅ 어떻게 에러를 발생시킬 수 있는지?
+// // 커스텀 유효성 검사
+
+// import { useForm } from 'react-hook-form';
+
+// // 🔶 password 와 password1 이 같지 않을 경우 에러 발생시키기
+// // 사용자 명이든 어떤 항목이든 내가 원하는 곳에 에러를 발생시킬 수 있다
+// // 추가적인 에러가 필요하다면 항목의 이름을 새로 지어주고 사용할 수 있다
+// // 뒤에 물음표? 붙이는 것이 중요 errors와 extraError 가 존재할 때만 message 찾아봄
+
+// // 🔶 setError
+// // setError 는 발생하는 문제에 따라 추가적으로 에러를 설정할 수 있게 도와줌
+// // form에서 내가 고른 input 항목에 강제로 focus 시킬 수 있다
+
+// // 🔶 shouldFocus
+// // 에러가 있는 곳으로 자동으로 focus 됨
+
+// // 내가 원하는 어떤 규칙이던 검사할 수 있다
+// // 예를 들면 내 사이트에 이름이 nico인 사용자는 가입시키지를 원하지 않는다
+// // validate 옵션 씀
+// // validate 는 함수를 값으로 가질 건데, 이 함수는 인자로 항목에 현재 쓰여지고 있는 값을 받음
+// // validate 를 인자로 받고, true 또는 false 를 리턴
+
+// interface IForm {
+//   email: string;
+//   firstName: string;
+//   lastName: string;
+//   username: string;
+//   password: string;
+//   password1: string;
+//   extraError?: string;
+// }
+
+// function ToDoList() {
+//   const {
+//     register,
+//     handleSubmit,
+//     formState: { errors },
+//     setError,
+//   } = useForm<IForm>({
+//     defaultValues: {
+//       email: '@naver.com',
+//     },
+//   });
+//   const onValid = (data: IForm) => {
+//     if (data.password !== data.password1) {
+//       // 🔶 직접 에러 설정하는 방법
+//       setError(
+//         'password1',
+//         { message: 'Password are not the same' },
+//         { shouldFocus: true } // 에러가 있는 곳으로 자동으로 focus 됨
+//       );
+//     }
+//     // 특정한 항목에 해당되는 에러가 아니라, 전체 form에 해당되는 에러
+//     // setError('extraError', { message: 'Server offline.' });
+//   };
+
+//   return (
+//     <div>
+//       <form
+//         style={{ display: 'flex', flexDirection: 'column' }}
+//         onSubmit={handleSubmit(onValid)}
+//       >
+//         <input
+//           {...register('email', {
+//             required: 'Email is required',
+//             pattern: {
+//               value: /^[A-Za-z0-9._%+-]+@naver.com$/,
+//               message: 'Only naver.com emails allowed',
+//             },
+//           })}
+//           placeholder="Email"
+//         />
+//         <span>{errors?.email?.message as string}</span>
+//         <input
+//           {...register('firstName', {
+//             required: 'write here',
+//             /* value 가 nico 를 포함하지 않는다면, true를 반환 */
+//             validate: {
+//               noNico: (value) =>
+//                 value.includes('nico') ? 'no nicos allowed' : true,
+//               noNick: (value) =>
+//                 value.includes('nick') ? 'no nick allowed' : true,
+//             },
+//           })}
+//           placeholder="First Name"
+//         />
+//         <span>{errors?.firstName?.message as string}</span>
+//         <input
+//           {...register('lastName', { required: 'write here' })}
+//           placeholder="Last Name"
+//         />
+//         <span>{errors?.lastName?.message as string}</span>
+//         <input
+//           {...register('username', { required: 'write here', minLength: 10 })}
+//           placeholder="Username"
+//         />
+//         <span>{errors?.username?.message as string}</span>
+//         <input
+//           {...register('password', { required: 'write here', minLength: 5 })}
+//           placeholder="Password"
+//         />
+//         <span>{errors?.password?.message as string}</span>
+//         <input
+//           {...register('password1', {
+//             required: 'Passwrod is required',
+//             minLength: {
+//               value: 5,
+//               message: 'Passwrod is too short',
+//             },
+//           })}
+//           placeholder="Password1"
+//         />
+//         <span>{errors?.password1?.message as string}</span>
+//         <button>Add</button>
+//         <span>{errors?.extraError?.message as string}</span>
+//       </form>
+//     </div>
+//   );
+// }
+
+// export default ToDoList;
+
+///////////////////////////////////////////////////////////
+// ✅ 6-10. Recap
+
+// 🔶 react-hook-form
+// 모든 것은 register 함수에서 일어난다
+// register 함수는 useForm hook 을 사용해서 가져올 수 있고,
+// 해야 할 것은 이 함수를 내가 가진 모든 input에서 호출해주는 것
+// 그리고 react-hook-form 이 알 수 있도록, input의 이름을 줘야 함
+// 그래야 react-hook-form 이 data 객체에 input 값을 주고, 에러를 확인할 수 있다
 
 import { useForm } from 'react-hook-form';
 
-// 🔶 password 와 password1 이 같지 않을 경우 에러 발생시키기
-// 사용자 명이든 어떤 항목이든 내가 원하는 곳에 에러를 발생시킬 수 있다
-// 추가적인 에러가 필요하다면 항목의 이름을 새로 지어주고 사용할 수 있다
-// 뒤에 물음표? 붙이는 것이 중요 errors와 extraError 가 존재할 때만 message 찾아봄
-
-// 🔶 setError
-// setError 는 발생하는 문제에 따라 추가적으로 에러를 설정할 수 있게 도와줌
-// form에서 내가 고른 input 항목에 강제로 focus 시킬 수 있다
-
-// 🔶 shouldFocus
-// 에러가 있는 곳으로 자동으로 focus 됨
-
-// 내가 원하는 어떤 규칙이던 검사할 수 있다
-// 예를 들면 내 사이트에 이름이 nico인 사용자는 가입시키지를 원하지 않는다
-// validate 옵션 씀
-// validate 는 함수를 값으로 가질 건데, 이 함수는 인자로 항목에 현재 쓰여지고 있는 값을 받음
-// validate 를 인자로 받고, true 또는 false 를 리턴
-
 interface IForm {
-  email: string;
-  firstName: string;
-  lastName: string;
-  username: string;
-  password: string;
-  password1: string;
-  extraError?: string;
+  toDo: string;
 }
 
 function ToDoList() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setError,
-  } = useForm<IForm>({
-    defaultValues: {
-      email: '@naver.com',
-    },
-  });
-  const onValid = (data: IForm) => {
-    if (data.password !== data.password1) {
-      // 🔶 직접 에러 설정하는 방법
-      setError(
-        'password1',
-        { message: 'Password are not the same' },
-        { shouldFocus: true } // 에러가 있는 곳으로 자동으로 focus 됨
-      );
-    }
-    // 특정한 항목에 해당되는 에러가 아니라, 전체 form에 해당되는 에러
-    // setError('extraError', { message: 'Server offline.' });
+  const { register, handleSubmit, setValue } = useForm<IForm>();
+  const handleValid = (data: IForm) => {
+    // data 가 유효하다면, setValue 값을 다시 설정
+    // 데이터 잘 입력했다면 값을 비워주기 위해 사용
+    // 이 함수들은 다 useForm에서 나옴
+    console.log('add to do', data.toDo);
+    setValue('toDo', '');
   };
-
   return (
     <div>
-      <form
-        style={{ display: 'flex', flexDirection: 'column' }}
-        onSubmit={handleSubmit(onValid)}
-      >
+      <h1>To Dos</h1>
+      <hr />
+      <form onSubmit={handleSubmit(handleValid)}>
         <input
-          {...register('email', {
-            required: 'Email is required',
-            pattern: {
-              value: /^[A-Za-z0-9._%+-]+@naver.com$/,
-              message: 'Only naver.com emails allowed',
-            },
+          {...register('toDo', {
+            required: 'Please write a To Do',
           })}
-          placeholder="Email"
+          placeholder="Write a to do"
         />
-        <span>{errors?.email?.message as string}</span>
-        <input
-          {...register('firstName', {
-            required: 'write here',
-            /* value 가 nico 를 포함하지 않는다면, true를 반환 */
-            validate: {
-              noNico: (value) =>
-                value.includes('nico') ? 'no nicos allowed' : true,
-              noNick: (value) =>
-                value.includes('nick') ? 'no nick allowed' : true,
-            },
-          })}
-          placeholder="First Name"
-        />
-        <span>{errors?.firstName?.message as string}</span>
-        <input
-          {...register('lastName', { required: 'write here' })}
-          placeholder="Last Name"
-        />
-        <span>{errors?.lastName?.message as string}</span>
-        <input
-          {...register('username', { required: 'write here', minLength: 10 })}
-          placeholder="Username"
-        />
-        <span>{errors?.username?.message as string}</span>
-        <input
-          {...register('password', { required: 'write here', minLength: 5 })}
-          placeholder="Password"
-        />
-        <span>{errors?.password?.message as string}</span>
-        <input
-          {...register('password1', {
-            required: 'Passwrod is required',
-            minLength: {
-              value: 5,
-              message: 'Passwrod is too short',
-            },
-          })}
-          placeholder="Password1"
-        />
-        <span>{errors?.password1?.message as string}</span>
         <button>Add</button>
-        <span>{errors?.extraError?.message as string}</span>
       </form>
+      <ul></ul>
     </div>
   );
 }
 
 export default ToDoList;
+
+// handleSubmit 을 useForm 에서 가져온 다음에 이것을 호출해야함
+// 그러면 이 함수가 data를 검사하고,
+// data가 유효하다면 내가 만든 함수(handleValid)를 호출함
