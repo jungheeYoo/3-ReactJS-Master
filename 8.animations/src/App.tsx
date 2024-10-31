@@ -398,24 +398,74 @@
 
 // export default App;
 
-//////////////////////////////////////////////
-// ✅ 8-8. MotionValues part Two
-// ✅ useTransform - 한 값 범위에서 다른 값 범위로 매핑
+// //////////////////////////////////////////////
+// // ✅ 8-8. MotionValues part Two
+// // ✅ useTransform - 한 값 범위에서 다른 값 범위로 매핑
 
-// 🔶 useTransform
-// useTransform 은 일단 값을 하나 받음
-// 그리고 그 값의 어떤 제한 값과 원하는 출력 값을 받을 것임
+// // 🔶 useTransform
+// // useTransform 은 일단 값을 하나 받음
+// // 그리고 그 값의 어떤 제한 값과 원하는 출력 값을 받을 것임
+
+// import styled from 'styled-components';
+// import { motion, useMotionValue, useTransform } from 'framer-motion';
+// import { useEffect } from 'react';
+
+// const Wrapper = styled.div`
+//   height: 100vh;
+//   width: 100vw;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
+
+// const Box = styled(motion.div)`
+//   width: 200px;
+//   height: 200px;
+//   background-color: rgba(255, 255, 255, 1);
+//   border-radius: 40px;
+//   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
+// `;
+
+// // x가 -800이라면 2를 얻고
+// // x가 0이라면 1를 얻고
+// // x가 800이라면 0.1를 얻고
+// // 하나의 값, 원하는 입력 값, 얻길 원하는 출력 값
+
+// function App() {
+//   const x = useMotionValue(0);
+//   const scale = useTransform(x, [-800, 0, 800], [2, 1, 0.1]);
+//   // x값 보는 방법
+//   useEffect(() => {
+//     // x.on('change', () => console.log(x.get));
+//     scale.on('change', () => console.log(scale.get));
+//   }, [x]);
+
+//   return (
+//     <Wrapper>
+//       {/* <Box style={{ x, scale: scale }} drag="x" dragSnapToOrigin /> */}
+//       {/* 이름을 같게 하면 shortcut으로 하나로 줄여서 쓸 수 있다 */}
+//       <Box style={{ x, scale }} drag="x" dragSnapToOrigin />
+//     </Wrapper>
+//   );
+// }
+
+// export default App;
+
+//////////////////////////////////////////////
+// ✅ 8-9. MotionValues part Three
+// 배경색 바꾸기, 스크롤 애니메이션
 
 import styled from 'styled-components';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
-import { useEffect } from 'react';
+import { motion, useMotionValue, useTransform, useScroll } from 'framer-motion';
+// import { useEffect } from 'react';
 
-const Wrapper = styled.div`
-  height: 100vh;
+const Wrapper = styled(motion.div)`
+  height: 200vh;
   width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: linear-gradient(135deg, rgb(0 159 238), rgb(238 171 0));
 `;
 
 const Box = styled(motion.div)`
@@ -426,25 +476,29 @@ const Box = styled(motion.div)`
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
 
-// x가 -800이라면 2를 얻고
-// x가 0이라면 1를 얻고
-// x가 800이라면 0.1를 얻고
-// 하나의 값, 원하는 입력 값, 얻길 원하는 출력 값
-
 function App() {
   const x = useMotionValue(0);
-  const scale = useTransform(x, [-800, 0, 800], [2, 1, 0.1]);
-  // x값 보는 방법
-  useEffect(() => {
-    // x.on('change', () => console.log(x.get));
-    scale.on('change', () => console.log(scale.get));
-  }, [x]);
+  const rotateZ = useTransform(x, [-800, 800], [-360, 360]);
+  const gradient = useTransform(
+    x,
+    [-800, 0, 800],
+    [
+      'linear-gradient(135deg, rgb(166 0 238), rgb(111 238 0))',
+      'linear-gradient(135deg, rgb(0 159 238), rgb(238 171 0))',
+      'linear-gradient(135deg, rgb(238 32 32), rgb(0 235 220))',
+    ]
+  );
+  const { scrollYProgress } = useScroll();
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 3]);
+  // useEffect(() => {
+  //   scrollY.on('change', () => {
+  //     console.log(scrollY.get(), scrollYProgress.get());
+  //   });
+  // }, [scrollY, scrollYProgress]);
 
   return (
-    <Wrapper>
-      {/* <Box style={{ x, scale: scale }} drag="x" dragSnapToOrigin /> */}
-      {/* 이름을 같게 하면 shortcut으로 하나로 줄여서 쓸 수 있다 */}
-      <Box style={{ x, scale }} drag="x" dragSnapToOrigin />
+    <Wrapper style={{ background: gradient }}>
+      <Box style={{ x, rotateZ, scale: scale }} drag="x" dragSnapToOrigin />
     </Wrapper>
   );
 }
