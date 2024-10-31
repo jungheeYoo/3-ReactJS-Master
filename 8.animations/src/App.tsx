@@ -266,13 +266,105 @@
 
 // export default App;
 
+// //////////////////////////////////////////////
+// // ✅ 8-6. Gestures part Two
+// // constraint(제약) : 드래그 가능 영역에 제약 조건을 적용
+
+// import styled from 'styled-components';
+// import { motion } from 'framer-motion';
+// import { useRef } from 'react';
+
+// const Wrapper = styled.div`
+//   height: 100vh;
+//   width: 100vw;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
+
+// const BiggerBox = styled.div`
+//   width: 600px;
+//   height: 600px;
+//   background-color: rgba(255, 255, 255, 0.4);
+//   border-radius: 40px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   // overflow: hidden;
+// `;
+
+// const Box = styled(motion.div)`
+//   width: 200px;
+//   height: 200px;
+//   background-color: rgba(255, 255, 255, 1);
+//   border-radius: 40px;
+//   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
+// `;
+
+// const boxVariants = {
+//   hover: { rotateZ: 90 },
+//   click: { borderRadius: '100px' },
+// };
+
+// // 🔶 dragConstraints
+// // 기본적으로 어떤 Box를 만들 수 있다. 제약있는 Box. 드래킹이 허용될 수 있는 영역
+
+// // 🔶 dragSnapToOrigin
+// // 중앙으로 오게 하는 방법 두 가지
+// // 원래 위치로 돌아감
+
+// // 🔶 dragElastic
+// // 당기는 힘
+// // 0과 1 사이의 값이어야 함
+// // 기본 값 0.5
+
+// function App() {
+//   const biggerBoxRef = useRef<HTMLDivElement>(null);
+//   return (
+//     <Wrapper>
+//       <BiggerBox ref={biggerBoxRef}>
+//         <Box
+//           drag
+//           /* dragConstraints={{ top: -200, bottom: 200, left: -200, right: 200 }} */
+//           dragConstraints={biggerBoxRef}
+//           dragSnapToOrigin
+//           dragElastic={0.5}
+//           variants={boxVariants}
+//           whileHover="hover"
+//           whileTap="click"
+//         />
+//       </BiggerBox>
+//     </Wrapper>
+//   );
+// }
+
+// export default App;
+
 //////////////////////////////////////////////
-// ✅ 8-6. Gestures part Two
-// constraint(제약) : 드래그 가능 영역에 제약 조건을 적용
+// ✅ 8-7. MotionValues part One
+// ✅ 나의 애니메이션 내의 수치를 트래킹할 때 필요
 
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { useRef } from 'react';
+import { motion, useMotionValue } from 'framer-motion';
+import { useEffect } from 'react';
+
+// 🔶 useMotionValue
+// style의 x좌표가 바뀔 때마다, 이 MotionValue 업데이트 됨
+// MotionValue가 업데이트 될 때 React Rendering Cycle(랜더링 싸이클)을 발동시키지 않음
+// 이 말은 MotionValue가 React State(상태)로 살지 않는다는 것이다. State가 아님
+// 그래서 MotionValue가 바뀌어도, 컴포넌트는 다시 랜더링 되지 않는다
+// 사실 우리는 컴포넌트 값이 바뀐다고 매번 다시 랜더링하고 싶지는 않음
+// 그래서 Motion 이 하는 일은, x값을 계속해서 추적하는데,
+// 이 값은 ReactJS 세계에서 존재하지 않는 다는 것
+// 그래서 만약 이 값이 바뀌면, 우리 컴포넌트는 다시 랜더링 되지 않는다
+// Framer Motion 세계에서, MotionValue 값들은 ReactJS 세계에서 존재하지 않는다
+// MotionValue는 네가 계속 특정한 값을 추적할 수 있도록 해줌. x나 y 뭐든.
+// 그리고 네가 특정 값을 만들 때, const x = useMotionValue(0);
+// 그리고 네가 그 값을 style에 넣을 때, <Box style={{ x }} drag="x" dragSnapToOrigin />
+// 유저가 움직일 때 자동적으로, 예를 들면 유저가 드래그할 때 x 값이 업데이트 된다
+// 그리고 이것이 onChange 를 발동시킬 것이고 내 값을 console.log 할 수 있다
+// useMotionValue 를 기본 값 0으로 사용하고
+// 원하는 곳에 style을 넣는다. style이 변경될 때 그 값도 변경 됨.
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -280,17 +372,6 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const BiggerBox = styled.div`
-  width: 600px;
-  height: 600px;
-  background-color: rgba(255, 255, 255, 0.4);
-  border-radius: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  // overflow: hidden;
 `;
 
 const Box = styled(motion.div)`
@@ -301,39 +382,16 @@ const Box = styled(motion.div)`
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
 
-const boxVariants = {
-  hover: { rotateZ: 90 },
-  click: { borderRadius: '100px' },
-};
-
-// 🔶 dragConstraints
-// 기본적으로 어떤 Box를 만들 수 있다. 제약있는 Box. 드래킹이 허용될 수 있는 영역
-
-// 🔶 dragSnapToOrigin
-// 중앙으로 오게 하는 방법 두 가지
-// 원래 위치로 돌아감
-
-// 🔶 dragElastic
-// 당기는 힘
-// 0과 1 사이의 값이어야 함
-// 기본 값 0.5
-
 function App() {
-  const biggerBoxRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  // ✨ x값 보는 방법 : useEffect 사용
+  useEffect(() => {
+    x.on('change', () => console.log(x.get));
+  }, [x]);
+
   return (
     <Wrapper>
-      <BiggerBox ref={biggerBoxRef}>
-        <Box
-          drag
-          /* dragConstraints={{ top: -200, bottom: 200, left: -200, right: 200 }} */
-          dragConstraints={biggerBoxRef}
-          dragSnapToOrigin
-          dragElastic={0.5}
-          variants={boxVariants}
-          whileHover="hover"
-          whileTap="click"
-        />
-      </BiggerBox>
+      <Box style={{ x }} drag="x" dragSnapToOrigin />
     </Wrapper>
   );
 }
