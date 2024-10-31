@@ -571,24 +571,90 @@
 
 // export default App;
 
-////////////////////////////////////////////////
-// ✅ 8-11. AnimatePresence
+// ////////////////////////////////////////////////
+// // ✅ 8-11. AnimatePresence
+
+// import styled from 'styled-components';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import { useState } from 'react';
+
+// // ✅ click 했을 때 보이고 사라지기 animate로 만들기
+
+// // 🔶 AnimatePresence
+// // AnimatePresence 는 component 인데
+// // React js App에서 사라지는 component 를 animate함
+
+// // AnimatePresence 는 항상 visible 상태여야한다
+// // AnimatePresence는 밖에 있어야함. 안에 있으면 안 됨
+// // AnimatePresence 내부에는 condition(조건문)이 있어야 한다
+// // AnimatePresence 는 무엇을 확인하냐면
+// // 안쪽에 나타나거나 사라지는 것이 있다면 그것을 animate할 수 있도록 해줌
+
+// const Wrapper = styled(motion.div)`
+//   height: 100vh;
+//   width: 100vw;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
+
+// const Box = styled(motion.div)`
+//   width: 400px;
+//   height: 200px;
+//   background-color: rgba(255, 255, 255, 1);
+//   border-radius: 40px;
+//   position: absolute;
+//   top: 100px;
+//   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
+// `;
+
+// const boxVariants = {
+//   initial: {
+//     opacity: 0,
+//     scale: 0,
+//   },
+//   visible: {
+//     opacity: 1,
+//     scale: 1,
+//     rotateZ: 360,
+//   },
+//   leaving: {
+//     opacity: 0,
+//     scale: 0,
+//     y: 50,
+//   },
+// };
+
+// function App() {
+//   const [showing, setShowing] = useState(false);
+//   const toggleShowing = () => setShowing((prev) => !prev);
+//   return (
+//     <Wrapper>
+//       <button onClick={toggleShowing}>Click</button>
+//       <AnimatePresence>
+//         {showing ? (
+//           <Box
+//             variants={boxVariants}
+//             initial="initial"
+//             animate="visible"
+//             exit="leaving"
+//             // ✨ exit state :  여기서 style 을 설정할 수 있는데, 이 element 가 사라질 때 어떤 animation 을 발생시킬 지 정하는 것
+//           />
+//         ) : null}
+//       </AnimatePresence>
+//     </Wrapper>
+//   );
+// }
+
+// export default App;
+
+//////////////////////////////////////////////
+// ✅ 8-12. Slider part One
+// ✅ AnimatePresence 슬라이더 만들기 1
 
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-
-// ✅ click 했을 때 보이고 사라지기 animate로 만들기
-
-// 🔶 AnimatePresence
-// AnimatePresence 는 component 인데
-// React js App에서 사라지는 component 를 animate함
-
-// AnimatePresence 는 항상 visible 상태여야한다
-// AnimatePresence는 밖에 있어야함. 안에 있으면 안 됨
-// AnimatePresence 내부에는 condition(조건문)이 있어야 한다
-// AnimatePresence 는 무엇을 확인하냐면
-// 안쪽에 나타나거나 사라지는 것이 있다면 그것을 animate할 수 있도록 해줌
 
 const Wrapper = styled(motion.div)`
   height: 100vh;
@@ -596,6 +662,7 @@ const Wrapper = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 `;
 
 const Box = styled(motion.div)`
@@ -605,43 +672,63 @@ const Box = styled(motion.div)`
   border-radius: 40px;
   position: absolute;
   top: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
 
-const boxVariants = {
-  initial: {
+const box = {
+  invisible: {
+    x: 500,
     opacity: 0,
     scale: 0,
   },
   visible: {
+    x: 0,
     opacity: 1,
     scale: 1,
-    rotateZ: 360,
+    transition: {
+      duration: 1,
+    },
   },
-  leaving: {
+  exit: {
+    x: -500,
     opacity: 0,
     scale: 0,
-    y: 50,
+    transition: { duration: 1 },
   },
 };
 
 function App() {
-  const [showing, setShowing] = useState(false);
-  const toggleShowing = () => setShowing((prev) => !prev);
+  // 🔶 한 번에 하나씩 보여주기
+  const [visible, setVisible] = useState(1);
+  const nextPlease = () => setVisible((prev) => (prev === 10 ? 10 : prev + 1));
+  const prevPlease = () => setVisible((prev) => (prev === 1 ? 1 : prev - 1));
   return (
+    // 🔷 각각의 박스 만듦
+    // 이 list 를 render 한다면 i 가 visible 과 같은지 확인할거고 Box를 보여줄 것임
+    // 1,2,3.. 같은 배열의 숫자가 visible state와 같을때만 보여줌
     <Wrapper>
-      <button onClick={toggleShowing}>Click</button>
       <AnimatePresence>
-        {showing ? (
-          <Box
-            variants={boxVariants}
-            initial="initial"
-            animate="visible"
-            exit="leaving"
-            // ✨ exit state :  여기서 style 을 설정할 수 있는데, 이 element 가 사라질 때 어떤 animation 을 발생시킬 지 정하는 것
-          />
-        ) : null}
+        {/* 만약 i 와 visible 같으면 Box 를 보여줄거고 아니면 보여주지 않음 */}
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) =>
+          i === visible ? (
+            <Box
+              variants={box}
+              initial="invisible"
+              animate="visible"
+              exit="exit"
+              key={i}
+            >
+              {i}
+            </Box>
+          ) : null
+        )}
       </AnimatePresence>
+      <button onClick={nextPlease}>next</button>
+      <button onClick={prevPlease}>prev</button>
     </Wrapper>
   );
 }
