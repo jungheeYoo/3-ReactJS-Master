@@ -423,6 +423,8 @@ interface IForm {
 function ToDoList() {
   const { register, handleSubmit, setValue } = useForm<IForm>();
   const handleValid = (data: IForm) => {
+    // 🔶 setValue
+    // 값이 검사를 통과하면 다시 input 비우기
     // data 가 유효하다면, setValue 값을 다시 설정
     // 데이터 잘 입력했다면 값을 비워주기 위해 사용
     // 이 함수들은 다 useForm에서 나옴
@@ -450,98 +452,5 @@ function ToDoList() {
 export default ToDoList;
 
 // handleSubmit 을 useForm 에서 가져온 다음에 이것을 호출해야함
-// 그러면 이 함수가 data를 검사하고,
+// 그러면 이 handleSubmit 함수가 data를 검사하고,
 // data가 유효하다면 내가 만든 함수(handleValid)를 호출함
-
-// /////////////////////////////////////////////////////////
-// // ✅ 6-11. Add To Do
-// // ✅ Recoil
-// // components 폴더 만들어서 옮김 App 안에 경로도 바꿈
-
-// import { useForm } from 'react-hook-form';
-// import {
-//   atom,
-//   useRecoilState,
-//   // useRecoilValue,
-//   // useSetRecoilState,
-// } from 'recoil';
-
-// interface IForm {
-//   toDo: string;
-// }
-
-// interface IToDo {
-//   text: string;
-//   id: number;
-//   // 카테고리는 이 세가지만 받을 수 있다고 해줌
-//   // 명시 된 3개 중 하나의 string만을 가져야 함
-//   category: 'TO_DO' | 'DOING' | 'DONE';
-// }
-
-// // atom의 type이 ToDo의 배열임을 알림
-// const toDoState = atom<IToDo[]>({
-//   key: 'toDo',
-//   default: [],
-// });
-
-// // atom의 value를 변경해야 하는 경우
-// // 이걸 위해서 modifier 함수 가져와야 함
-// // useSetRecoilState() 함수 사용
-
-// function ToDoList() {
-//   // 하지만 새로운 방식
-//   // useRecoilState() 함수는 value 와 modifier 함수를 반환
-//   const [toDos, setToDos] = useRecoilState(toDoState);
-//   // const [value, modFn] = useRecoilState(toDoState);
-//   // atom의 값에 접근하려면 useRecoilValue() 함수 이용
-//   // const value = useRecoilValue(toDoState); // 값을 가져오고
-//   // const modFn = useSetRecoilState(toDoState); // 값을 바꾸고
-//   const { register, handleSubmit, setValue } = useForm<IForm>();
-//   const handleValid = ({ toDo }: IForm) => {
-//     // data 가 유효하다면, setValue 값을 다시 설정
-//     // 데이터 잘 입력했다면 값을 비워주기 위해 사용
-//     // 이 함수들은 다 useForm에서 나옴
-//     // console.log('add to do', data.toDo);
-//     // state 변경 함수
-//     // setToDos 함수는 두 개의 동작을 할 수 있다
-//     // state를 직접적으로 설정해 줄 수도 있고, 아니면 다른 함수를 받을 수도 있다
-//     // 만약 여기에 함수를 쓴다면, 함수의 리턴 값이 새로운 state가 됨
-//     setToDos((oldToDos) => [
-//       { text: toDo, id: Date.now(), category: 'TO_DO' },
-//       ...oldToDos,
-//     ]);
-//     setValue('toDo', '');
-//   };
-
-//   return (
-//     <div>
-//       <h1>To Dos</h1>
-//       <hr />
-//       <form onSubmit={handleSubmit(handleValid)}>
-//         <input
-//           {...register('toDo', {
-//             required: 'Please write a To Do',
-//           })}
-//           placeholder="Write a to do"
-//         />
-//         <button>Add</button>
-//       </form>
-//       <ul>
-//         {toDos.map((toDo) => (
-//           <li key={toDo.id}>{toDo.text}</li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// }
-
-// export default ToDoList;
-
-// // value만 불러오고 싶을 때
-// // useRecoilValue 사용
-
-// // value를 바꾸고 싶으면
-// // useSetRecoilState
-
-// // 둘 다 value와 변경 함수를 둘 다 얻고 싶다면?
-// // useRecoilState hook을 사용
