@@ -648,13 +648,118 @@
 
 // export default App;
 
+// //////////////////////////////////////////////
+// // ✅ 8-12. Slider part One
+// // ✅ AnimatePresence 슬라이더 만들기 1
+
+// import styled from 'styled-components';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import { useState } from 'react';
+
+// const Wrapper = styled(motion.div)`
+//   height: 100vh;
+//   width: 100vw;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   flex-direction: column;
+// `;
+
+// const Box = styled(motion.div)`
+//   width: 400px;
+//   height: 200px;
+//   background-color: rgba(255, 255, 255, 1);
+//   border-radius: 40px;
+//   position: absolute;
+//   top: 100px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-size: 28px;
+//   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
+// `;
+
+// const box = {
+//   invisible: {
+//     x: 500,
+//     opacity: 0,
+//     scale: 0,
+//   },
+//   visible: {
+//     x: 0,
+//     opacity: 1,
+//     scale: 1,
+//     transition: {
+//       duration: 1,
+//     },
+//   },
+//   exit: {
+//     x: -500,
+//     opacity: 0,
+//     scale: 0,
+//     transition: { duration: 1 },
+//   },
+// };
+
+// function App() {
+//   // 🔶 한 번에 하나씩 보여주기
+//   const [visible, setVisible] = useState(1);
+//   const nextPlease = () => setVisible((prev) => (prev === 10 ? 10 : prev + 1));
+//   const prevPlease = () => setVisible((prev) => (prev === 1 ? 1 : prev - 1));
+//   return (
+//     // 🔷 각각의 박스 만듦
+//     // 이 list 를 render 한다면 i 가 visible 과 같은지 확인할거고 Box를 보여줄 것임
+//     // 1,2,3.. 같은 배열의 숫자가 visible state와 같을때만 보여줌
+//     <Wrapper>
+//       <AnimatePresence>
+//         {/* 만약 i 와 visible 같으면 Box 를 보여줄거고 아니면 보여주지 않음 */}
+//         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) =>
+//           i === visible ? (
+//             <Box
+//               variants={box}
+//               initial="invisible"
+//               animate="visible"
+//               exit="exit"
+//               key={i}
+//             >
+//               {i}
+//             </Box>
+//           ) : null
+//         )}
+//       </AnimatePresence>
+//       <button onClick={nextPlease}>next</button>
+//       <button onClick={prevPlease}>prev</button>
+//     </Wrapper>
+//   );
+// }
+
+// export default App;
+
 //////////////////////////////////////////////
-// ✅ 8-12. Slider part One
-// ✅ AnimatePresence 슬라이더 만들기 1
+// ✅ 8-13. Slider part Two
+// AnimatePresence 슬라이더 만들기 2
+// custom property
 
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+
+// 🔶 react js 의 동작 방식
+// react js 는 key 를 보고 각 Box 가 고유하다고 생각
+// 만약 key 를 없애면 react js 는 각 child 가 고유한 key prop 이 필요하다고 할 것임
+// 왜냐하면 react js 의 각 element 는 key 를 가져야 하기 때문이다
+// key 를 바꾸면 react js 는 이전 element 가 사라지고 새 element 가 생겼다고 할 것임
+
+// 여기서
+// 개체의 key 만 바꿈. 그리고 key 를 바꾸면 React js 는 component 를 re-render 해준다
+// 만약 component 의 key가 바뀌면 새로운 것을 re-render 함
+// 왜냐면 모든 key는 고유해야하기 때문이다
+// 만약 key를 바꾸면 이전 component는 없어지고
+// 이전 component 가 없어지면
+// AnimatePresence 가 exit animation 을 실행
+
+// 🔶 custom property
+// custom 은 variants 에 데이터를 보낼 수 있게 해주는 property이다
 
 const Wrapper = styled(motion.div)`
   height: 100vh;
@@ -679,53 +784,60 @@ const Box = styled(motion.div)`
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
 
+// 🔶 variant를 function 으로 바꾸기
+// 리턴 방법 2
 const box = {
-  invisible: {
-    x: 500,
-    opacity: 0,
-    scale: 0,
+  entry: (isBack: boolean) => {
+    return {
+      x: isBack ? -500 : 500,
+      opacity: 0,
+      scale: 0,
+    };
   },
-  visible: {
+  center: {
     x: 0,
     opacity: 1,
     scale: 1,
     transition: {
-      duration: 1,
+      duration: 0.3,
     },
   },
-  exit: {
-    x: -500,
+  // 리턴 방법 2 - (안에 넣기)
+  exit: (isBack: boolean) => ({
+    x: isBack ? 500 : -500,
     opacity: 0,
     scale: 0,
-    transition: { duration: 1 },
-  },
+    transition: { duration: 0.3 },
+  }),
 };
 
 function App() {
-  // 🔶 한 번에 하나씩 보여주기
   const [visible, setVisible] = useState(1);
-  const nextPlease = () => setVisible((prev) => (prev === 10 ? 10 : prev + 1));
-  const prevPlease = () => setVisible((prev) => (prev === 1 ? 1 : prev - 1));
+  const [back, setBack] = useState(false);
+  const nextPlease = () => {
+    setBack(false);
+    setVisible((prev) => (prev === 10 ? 10 : prev + 1));
+  };
+  const prevPlease = () => {
+    setBack(true);
+    setVisible((prev) => (prev === 1 ? 1 : prev - 1));
+  };
+
+  // 🔶 <AnimatePresence mode="wait">
+  // mode="wait" 은 1번 다 끝나고 2번 오기
   return (
-    // 🔷 각각의 박스 만듦
-    // 이 list 를 render 한다면 i 가 visible 과 같은지 확인할거고 Box를 보여줄 것임
-    // 1,2,3.. 같은 배열의 숫자가 visible state와 같을때만 보여줌
     <Wrapper>
-      <AnimatePresence>
-        {/* 만약 i 와 visible 같으면 Box 를 보여줄거고 아니면 보여주지 않음 */}
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) =>
-          i === visible ? (
-            <Box
-              variants={box}
-              initial="invisible"
-              animate="visible"
-              exit="exit"
-              key={i}
-            >
-              {i}
-            </Box>
-          ) : null
-        )}
+      <AnimatePresence custom={back}>
+        <Box
+          custom={back}
+          variants={box}
+          initial="entry"
+          animate="center"
+          exit="exit"
+          key={visible}
+        >
+          {visible}
+        </Box>
       </AnimatePresence>
       <button onClick={nextPlease}>next</button>
       <button onClick={prevPlease}>prev</button>
