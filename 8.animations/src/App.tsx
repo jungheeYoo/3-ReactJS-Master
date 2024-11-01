@@ -847,12 +847,100 @@
 
 // export default App;
 
+// //////////////////////////////////////////////
+// // ✅ 8-14. You Need to Watch This
+// // ✅ layout animation
+// // ✅ layoutId
+// import styled from 'styled-components';
+// import { motion } from 'framer-motion';
+// import { useState } from 'react';
+
+// const Wrapper = styled(motion.div)`
+//   height: 100vh;
+//   width: 100vw;
+//   display: flex;
+//   justify-content: space-around;
+//   align-items: center;
+// `;
+
+// // 🔶 shared layout animation
+// // justify-content: center; // 다시 넣어줌
+// // align-items: center; // 다시 넣어줌
+// const Box = styled(motion.div)`
+//   width: 400px;
+//   height: 400px;
+//   background-color: rgba(255, 255, 255, 1);
+//   border-radius: 40px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
+// `;
+
+// const Circle = styled(motion.div)`
+//   background-color: #00a5ff;
+//   height: 100px;
+//   width: 100px;
+//   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
+// `;
+
+// // 🔶 layout animation
+// // justifyContent: clicked ? 'center' : 'flex-start',
+// // alignItems: clicked ? 'center' : 'flex-start',
+// // 이 prop 을 element에게 주면, 그 element의 layout이 바뀔 때 알아서 animate가 됨
+// // 만약 CSS 때문에 layout이 바뀐다면 알아서 animation이 만들어질것임
+
+// // function App() {
+// //   const [clicked, setClicked] = useState(false);
+// //   const toggleClicked = () => setClicked((prev) => !prev);
+// //   return (
+// //     <Wrapper onClick={toggleClicked}>
+// //       <Box
+// //         style={{
+// //           justifyContent: clicked ? 'center' : 'flex-start',
+// //           alignItems: clicked ? 'center' : 'flex-start',
+// //         }}
+// //       >
+// //         <Circle layout />
+// //       </Box>
+// //     </Wrapper>
+// //   );
+// // }
+
+// // 🔶 shared layout animation
+// // layoutId
+// // 서로 다른 컴포넌트를 연결해줌
+// // 한 컴포넌트를 다른 컴포넌트와 연결할 수 있도록 해줌
+
+// function App() {
+//   const [clicked, setClicked] = useState(false);
+//   const toggleClicked = () => setClicked((prev) => !prev);
+//   return (
+//     <Wrapper onClick={toggleClicked}>
+//       {/* ✨ layoutId : 서로 다른 컴포넌트를 연결해줌 */}
+//       <Box>
+//         {!clicked ? (
+//           <Circle layoutId="circle" style={{ borderRadius: 50 }} />
+//         ) : null}
+//       </Box>
+//       <Box>
+//         {clicked ? (
+//           <Circle layoutId="circle" style={{ borderRadius: 0, scale: 2 }} />
+//         ) : null}
+//       </Box>
+//     </Wrapper>
+//   );
+// }
+
+// export default App;
+
 //////////////////////////////////////////////
-// ✅ 8-14. You Need to Watch This
-// ✅ layout animation
-// ✅ layoutId
+// ✅ 8-15. Final Project part One
+// 박스 클릭 시 중앙으로 나오기
+// 두 개의 컴포넌트 연결 시켜서 애니메이션 하기
+
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 
 const Wrapper = styled(motion.div)`
@@ -863,70 +951,55 @@ const Wrapper = styled(motion.div)`
   align-items: center;
 `;
 
-// 🔶 shared layout animation
-// justify-content: center; // 다시 넣어줌
-// align-items: center; // 다시 넣어줌
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 50vw;
+  gap: 10px;
+  div:first-child,
+  div:last-child {
+    grid-column: span 2;
+  }
+`;
+
 const Box = styled(motion.div)`
-  width: 400px;
-  height: 400px;
+  height: 200px;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 40px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
+`;
+
+const Overlay = styled(motion.div)`
+  width: 100%;
+  height: 100%;
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
-
-const Circle = styled(motion.div)`
-  background-color: #00a5ff;
-  height: 100px;
-  width: 100px;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
-`;
-
-// 🔶 layout animation
-// justifyContent: clicked ? 'center' : 'flex-start',
-// alignItems: clicked ? 'center' : 'flex-start',
-// 이 prop 을 element에게 주면, 그 element의 layout이 바뀔 때 알아서 animate가 됨
-// 만약 CSS 때문에 layout이 바뀐다면 알아서 animation이 만들어질것임
-
-// function App() {
-//   const [clicked, setClicked] = useState(false);
-//   const toggleClicked = () => setClicked((prev) => !prev);
-//   return (
-//     <Wrapper onClick={toggleClicked}>
-//       <Box
-//         style={{
-//           justifyContent: clicked ? 'center' : 'flex-start',
-//           alignItems: clicked ? 'center' : 'flex-start',
-//         }}
-//       >
-//         <Circle layout />
-//       </Box>
-//     </Wrapper>
-//   );
-// }
-
-// 🔶 shared layout animation
-// layoutId
-// 서로 다른 컴포넌트를 연결해줌
 
 function App() {
   const [clicked, setClicked] = useState(false);
-  const toggleClicked = () => setClicked((prev) => !prev);
+  const toggle = () => setClicked((prev) => !prev);
   return (
-    <Wrapper onClick={toggleClicked}>
-      {/* layoutId : 서로 다른 컴포넌트를 연결해줌 */}
-      <Box>
-        {!clicked ? (
-          <Circle layoutId="circle" style={{ borderRadius: 50 }} />
-        ) : null}
-      </Box>
-      <Box>
+    <Wrapper onClick={toggle}>
+      <Grid>
+        <Box layoutId="hello" />
+        <Box />
+        <Box />
+        <Box />
+      </Grid>
+      <AnimatePresence>
         {clicked ? (
-          <Circle layoutId="circle" style={{ borderRadius: 0, scale: 2 }} />
+          <Overlay
+            initial={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}
+            animate={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+            exit={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}
+          >
+            <Box layoutId="hello" style={{ width: 400, height: 200 }} />
+          </Overlay>
         ) : null}
-      </Box>
+      </AnimatePresence>
     </Wrapper>
   );
 }
