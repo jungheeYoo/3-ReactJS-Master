@@ -15,6 +15,7 @@ const Nav = styled.nav`
   background-color: black;
   height: 80px;
   font-size: 12px;
+  color: white;
 `;
 
 const Col = styled.div`
