@@ -57,8 +57,10 @@
 
 //////////////////////////////////////////////////
 // ✅ 9-2. Header part Two
+// ✅ 9-3. Header part Three
 // 헤더 스타일 만들기
-// 네비게이션 이동, 애니메이션
+// 네비게이션 이동 애니메이션
+// 검색 창 애니메이션
 
 import { Link, useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
@@ -135,7 +137,7 @@ const Circle = styled(motion.span)`
 `;
 
 const Input = styled(motion.input)`
-  transform-origin: right center;
+  transform-origin: right center; // 변화가 시작하는 위치
   position: absolute;
   right: 0px;
   padding: 5px 10px;
@@ -270,10 +272,51 @@ export default Header;
 // 그래서 tvMatch 가 존재하는지 확인함
 // <Link to="/tv">Tv Shows {tvMatch && <Circle />}</Link>
 
-// 단축 평가 논리 연산자 정리
+// 🔶 단축 평가 논리 연산자 정리
 // {homeMatch?.isExact && <Circle />}
 // 단축 평가는 논리 연산자(&&, ||)가 왼쪽 피연산자의 값에 따라 오른쪽 피연산자의 평가 여부를 결정하는 방식
 // 만약 homeMatch가 null 또는 undefined라면 homeMatch?.isExact는 false가 되고, 따라서 && 연산자 오른쪽의 <Circle />은 평가되지 않음.
 // 만약 homeMatch가 존재하고 homeMatch.isExact가 true라면 <Circle />가 렌더링됨
 // tvMatch가 true 값(예: 객체)일 경우에만 && 연산자 오른쪽의 <Circle />가 평가되고 렌더링 됨
 // 만약 tvMatch가 false(예: null 또는 undefined)라면 <Circle />는 평가되지 않음
+
+////////////////////////////////////////////////////////////
+// ✨ 정리
+// 9-3. Header part Three
+// 네비게이션 이동 애니메이션
+// 검색 창 애니메이션
+
+// 🔶 Home 과 Tv Shows 애니메이션 추가
+// Home 과 Tv Shows 를 클릭할 때 옮겨다니도록 애니메이션 추가
+// Layout ID 사용
+// 우선 Circle 을 styled.span에서 motion.span 으로 바꿔줌
+// <Circle layoutId="circle" /> 레이아웃 연결
+
+// 🔶 검색창
+// 검색 아이콘 누르면 검색창 나오게 하기
+// state가 필요
+// const [searchOpen, setSearchOpen] = useState(false); 기본 값 false
+// Search 에 onClick 속성 만들기
+// searchOpen 을 여는 함수를 실행시킬 것임
+// 두 가지 옵션 있음
+// 1. 화살표 함수 사용
+// const openSearch = () => setSearchOpen(true)
+// <Search onClick={openSearch}>
+// 2. 익명 함수 사용
+// <Search onClick={() => setSearchOpen(true)}>
+// 입력창은 오른쪽에서 왼쪽으로 나타남
+// input 만듦. 소문자가 되어서는 안된다
+// 이건 Style Component, Motion Component 가 되어야 한다
+// const Input = styled(motion.input)``; 만듦
+// Input 수정 initial 최초에는 scaleX가 0.1이 되도록
+// initial={{ scaleX: 0 }} 쓰는 대신 animate로 바꿈 animate={{ scaleX: 0 }}
+// searchOpen이 현재 열려있는지 확인
+// animate={{ scaleX: searchOpen ? 1 : 0 }}
+// searchOpen 이 열려있다면, 비율을 1로 조정, 아니면 0으로
+// input 스타일로 가서  transform-origin: right center; 변화가 시작하는 위치 조정
+// 열렸냐 아니냐에 따라서 돋보기 움직임
+// animate={{ x: searchOpen ? -180 : 0 }}
+// 밖을 클릭하거나 돋보기 부분을 누르면 입력창 닫기
+// motion.svg에 onClick={toggleSearch} 넣어주고
+// toggleSearch로 바꿔줌. 이건 검색창을 열 뿐만 아니라 이전 값을 불러와서 반대 값을 돌려주는 역할
+// motion.svg 와 input에 애니메이션 효과 바꿈 transition={{ type: 'linear' }}
