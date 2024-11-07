@@ -642,9 +642,220 @@
 
 // export default Home;
 
+// //////////////////////////////////////////////////
+// // ✅ 9-10. Box Animations part Two
+// // Box info에 애니메이션 효과 주기
+
+// import { useQuery } from 'react-query';
+// import styled from 'styled-components';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import { getMovies, IGetMoviesResult } from '../api';
+// import { makeImagePath } from '../utils';
+// import { useState } from 'react';
+
+// const Wrapper = styled.div`
+//   background: black;
+//   padding-bottom: 200px;
+//   overflow-x: hidden;
+// `;
+
+// const Loader = styled.div`
+//   height: 20vh;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
+
+// const Banner = styled.div<{ $bgPhoto: string }>`
+//   height: 100vh;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   padding: 60px;
+//   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
+//     url(${(props) => props.$bgPhoto});
+//   background-size: cover;
+// `;
+
+// const Title = styled.h2`
+//   font-size: 68px;
+//   margin-bottom: 20px;
+// `;
+
+// const Overview = styled.p`
+//   font-size: 30px;
+//   width: 50%;
+// `;
+
+// const Slider = styled.div`
+//   position: relative;
+//   top: -100px;
+// `;
+
+// const Row = styled(motion.div)`
+//   display: grid;
+//   gap: 5px;
+//   grid-template-columns: repeat(6, 1fr);
+//   position: absolute;
+//   width: 100%;
+// `;
+
+// // () 다음에 넣어주면 됨 <{ $bgPhoto: string }>
+// const Box = styled(motion.div)<{ $bgPhoto: string }>`
+//   background-color: white;
+//   background-image: url(${(props) => props.$bgPhoto});
+//   background-size: cover;
+//   background-position: center center;
+//   height: 200px;
+//   font-size: 66px;
+//   &:first-child {
+//     transform-origin: center left;
+//   }
+//   &:last-child {
+//     transform-origin: center right;
+//   }
+// `;
+
+// const Info = styled(motion.div)`
+//   padding: 10px;
+//   background-color: ${(props) => props.theme.black.lighter};
+//   opacity: 0;
+//   position: absolute;
+//   width: 100%;
+//   bottom: 0;
+//   h4 {
+//     text-align: center;
+//     font-size: 18px;
+//   }
+// `;
+
+// const rowVariants = {
+//   hidden: {
+//     x: window.outerWidth + 5,
+//   },
+//   visible: {
+//     x: 0,
+//   },
+//   exit: {
+//     x: -window.outerWidth - 5,
+//   },
+// };
+
+// const boxVariants = {
+//   normal: {
+//     scale: 1,
+//   },
+//   hover: {
+//     scale: 1.3,
+//     y: -50,
+//     transition: {
+//       delay: 0.5,
+//       duration: 0.1,
+//       type: 'tween',
+//     },
+//   },
+// };
+
+// const infoVariants = {
+//   hover: {
+//     opacity: 1,
+//     transition: {
+//       delay: 0.5,
+//       duration: 0.1,
+//       type: 'tween',
+//     },
+//   },
+// };
+
+// // 🔶 자식 상속
+// // Info element에는 부모가 있고, 그 부모가 variants를 갖고 있음
+// // 그리고 whileHover 에 variants 의 이름을 넣어준 상태면,
+// // 자동적으로 자식에게도 상속 됨
+// // whileHover 같은 prop은 자동적으로 자식 element에게 상속 됨
+// // 그래서 자식 element에 같은 key를 가진(hover:) variants를 넣어주기만 하면, 똑같이 작동
+
+// const offset = 6;
+
+// function Home() {
+//   const { data, isLoading } = useQuery<IGetMoviesResult>(
+//     ['movies', 'nowPlaying'],
+//     getMovies
+//   );
+
+//   const [index, setIndex] = useState(0);
+//   const [leaving, setLeaving] = useState(false);
+//   const increaseIndex = () => {
+//     if (data) {
+//       if (leaving) return;
+//       toggleLeaving();
+//       const totalMovies = data?.results.length - 1;
+//       const maxIndex = Math.floor(totalMovies / offset) - 1;
+//       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+//     }
+//   };
+
+//   const toggleLeaving = () => setLeaving((prev) => !prev);
+//   return (
+//     <Wrapper>
+//       {isLoading ? (
+//         <Loader>Loading...</Loader>
+//       ) : (
+//         <>
+//           <Banner
+//             onClick={increaseIndex}
+//             $bgPhoto={makeImagePath(data?.results[0].backdrop_path || '')}
+//           >
+//             <Title>{data?.results[0].title}</Title>
+//             <Overview>{data?.results[0].overview}</Overview>
+//           </Banner>
+//           <Slider>
+//             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+//               <Row
+//                 variants={rowVariants}
+//                 initial="hidden"
+//                 animate="visible"
+//                 exit="exit"
+//                 transition={{ type: 'tween', duration: 1 }}
+//                 key={index}
+//               >
+//                 {/* <Box />
+//                 <Box />
+//                 <Box />
+//                 <Box />
+//                 <Box />
+//                 <Box /> */}
+//                 {/* 이미 배경으로 사용한 영화는 제외 */}
+//                 {data?.results
+//                   .slice(1)
+//                   .slice(offset * index, offset * index + offset)
+//                   .map((movie) => (
+//                     <Box
+//                       key={movie.id}
+//                       whileHover="hover"
+//                       initial="nomal"
+//                       variants={boxVariants}
+//                       transition={{ type: 'tween' }}
+//                       $bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
+//                     >
+//                       <Info variants={infoVariants}>
+//                         <h4>{movie.title}</h4>
+//                       </Info>
+//                     </Box>
+//                   ))}
+//               </Row>
+//             </AnimatePresence>
+//           </Slider>
+//         </>
+//       )}
+//     </Wrapper>
+//   );
+// }
+
+// export default Home;
+
 //////////////////////////////////////////////////
-// ✅ 9-10. Box Animations part Two
-// Box info에 애니메이션 효과 주기
+// ✅ 9-11. Movie Modal
+// Box 클릭했을 때 나오는 애니메이션 구현
 
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
@@ -652,6 +863,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getMovies, IGetMoviesResult } from '../api';
 import { makeImagePath } from '../utils';
 import { useState } from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 
 const Wrapper = styled.div`
   background: black;
@@ -700,7 +912,6 @@ const Row = styled(motion.div)`
   width: 100%;
 `;
 
-// () 다음에 넣어주면 됨 <{ $bgPhoto: string }>
 const Box = styled(motion.div)<{ $bgPhoto: string }>`
   background-color: white;
   background-image: url(${(props) => props.$bgPhoto});
@@ -708,6 +919,7 @@ const Box = styled(motion.div)<{ $bgPhoto: string }>`
   background-position: center center;
   height: 200px;
   font-size: 66px;
+  cursor: pointer;
   &:first-child {
     transform-origin: center left;
   }
@@ -767,16 +979,44 @@ const infoVariants = {
   },
 };
 
-// 🔶 자식 상속
-// Info element에는 부모가 있고, 그 부모가 variants를 갖고 있음
-// 그리고 whileHover 에 variants 의 이름을 넣어준 상태면,
-// 자동적으로 자식에게도 상속 됨
-// whileHover 같은 prop은 자동적으로 자식 element에게 상속 됨
-// 그래서 자식 element에 같은 key를 가진(hover:) variants를 넣어주기만 하면, 똑같이 작동
+// 🔶 Box 클릭하면 나오는 애니메이션 구현
+// 넷플릭스 보면 이런 상자를 클릭할 때마다 URL이 바뀐다
+// 우선 URL 바꿔야 함
+// URL을 바꾸면, 그 변화를 감지하고 URL 에 기반해서 애니메이셔니을 실행시킬 수 있다
 
+// 🔷 일단 어떤 영화를 클릭하고 있는지 알아야함. 내가 클릭하고 있는 영화의 ID
+// 1. Box 가 클릭됐을 때 호출 될 function 만듦
+// 2. URl을 바꾸기 위해서는 history object에 접근해야 함
+// useHistory 훅을 사용하면 URl을 왔다갔다할 수 있다. 여러 route 사이를 움직일 수 있다
+
+// 🔷 Box 를 클릭하면 점 애니메이션이 사라짐. 왜냐하면 현재 만든 Router 는 URL 을 처리하지 못하기 때문
+// 여전히 Home 페이지를 보고 있다는 것, URL 을 찾을 수 없다. 여기에 맞는 Route 가 없음
+// 그래서 match 를 사용
+// match는 지금 그 URL에 있는지 아닌지를 판단하는 도구
+// match를 만들기 전에 path='/' 를 배열로 바꿈
+
+// 🔷 다른 컴포넌트에 AnimatePresense 사용
+// 이 컴포넌트는 bigMovieMatch가 존재할 때만 나타날 것임
+// bigMovieMatch 는 내 위치가 이 route와 맞는지를 알려줌
+// 이 route가 이 URL /movies/:movieId 에 위치하면, bigMovieMatch 는 존재할 것이고,
+// 아니면 null
+// bigMovieMatch가 존재한다는 것은, 큰 card를 보여줘야 한다는 의미
+// 이 element는 /movies/519182 이 URL에 있을 때만 보여야 함
+// Home으로 돌아가면, 나타나면 안됨
+
+// 🔷 layout Id
+// layout Id는 두 개의 다른 div를 연결하고, framer motion이
+// 그 두 div 사이를 애니메이션으로 연결할 수 있도록 해주는 도구
+
+// ✨ 한 번에 보여주고 싶은 영화의 수
 const offset = 6;
 
 function Home() {
+  // 🔹 2. URl을 바꾸기 위해서는 history object에 접근해야 함
+  const history = useHistory();
+  // 🔹 3. 지금 그 URL에 있는지 아닌지를 match로 알아냄
+  const bigMovieMatch = useRouteMatch<{ movieId: string }>('/movies/:movieId');
+  // console.log(bigMovieMatch);
   const { data, isLoading } = useQuery<IGetMoviesResult>(
     ['movies', 'nowPlaying'],
     getMovies
@@ -795,6 +1035,10 @@ function Home() {
   };
 
   const toggleLeaving = () => setLeaving((prev) => !prev);
+  // 🔹 1. Box 가 클릭됐을 때 호출 될 function 만듦
+  const onBoxClicked = (movieId: number) => {
+    history.push(`/movies/${movieId}`);
+  };
   return (
     <Wrapper>
       {isLoading ? (
@@ -830,10 +1074,19 @@ function Home() {
                   .slice(offset * index, offset * index + offset)
                   .map((movie) => (
                     <Box
+                      // movie.id는 number고, layout는 string이어야 함
+                      // + '' 로 간단하게 string 으로 변환
+                      layoutId={movie.id + ''}
                       key={movie.id}
                       whileHover="hover"
                       initial="nomal"
                       variants={boxVariants}
+                      // ✨ 내가 클릭하고 있는 영화의 id 를 알아야 하니
+                      // onClick prop에 function을 넣어줄건데
+                      // onBoxClicked function 에 argument를 넘겨야 하니
+                      // 익명함수 사용
+                      // onBoxClicked 를 호출해서 movie.id 를 보내줌
+                      onClick={() => onBoxClicked(movie.id)}
                       transition={{ type: 'tween' }}
                       $bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
                     >
@@ -845,6 +1098,23 @@ function Home() {
               </Row>
             </AnimatePresence>
           </Slider>
+          <AnimatePresence>
+            {bigMovieMatch ? (
+              <motion.div
+                layoutId={bigMovieMatch.params.movieId}
+                style={{
+                  position: 'absolute',
+                  width: '40vw',
+                  height: '80vh',
+                  backgroundColor: 'coral',
+                  top: 50,
+                  left: 0,
+                  right: 0,
+                  margin: '0 auto',
+                }}
+              ></motion.div>
+            ) : null}
+          </AnimatePresence>
         </>
       )}
     </Wrapper>
