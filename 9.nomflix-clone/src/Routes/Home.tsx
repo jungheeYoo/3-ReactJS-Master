@@ -1123,10 +1123,276 @@
 
 // export default Home;
 
+// //////////////////////////////////////////////////
+// // ✅ 9-12. Movie Modal part Two
+// // 오버레이 만들기
+// // 사용자가 어디에 있든, 스크롤 된 화면에 맞게 가운데 나오도록 하기
+
+// import { useQuery } from 'react-query';
+// import styled from 'styled-components';
+// import { motion, AnimatePresence, useScroll } from 'framer-motion';
+// import { getMovies, IGetMoviesResult } from '../api';
+// import { makeImagePath } from '../utils';
+// import { useState } from 'react';
+// import { useHistory, useRouteMatch } from 'react-router-dom';
+
+// const Wrapper = styled.div`
+//   background: black;
+//   padding-bottom: 200px;
+//   overflow-x: hidden;
+// `;
+
+// const Loader = styled.div`
+//   height: 20vh;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
+
+// const Banner = styled.div<{ $bgPhoto: string }>`
+//   height: 100vh;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   padding: 60px;
+//   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
+//     url(${(props) => props.$bgPhoto});
+//   background-size: cover;
+// `;
+
+// const Title = styled.h2`
+//   font-size: 68px;
+//   margin-bottom: 20px;
+// `;
+
+// const Overview = styled.p`
+//   font-size: 30px;
+//   width: 50%;
+// `;
+
+// const Slider = styled.div`
+//   position: relative;
+//   top: -100px;
+// `;
+
+// const Row = styled(motion.div)`
+//   display: grid;
+//   gap: 5px;
+//   grid-template-columns: repeat(6, 1fr);
+//   position: absolute;
+//   width: 100%;
+// `;
+
+// const Box = styled(motion.div)<{ $bgPhoto: string }>`
+//   background-color: white;
+//   background-image: url(${(props) => props.$bgPhoto});
+//   background-size: cover;
+//   background-position: center center;
+//   height: 200px;
+//   font-size: 66px;
+//   cursor: pointer;
+//   &:first-child {
+//     transform-origin: center left;
+//   }
+//   &:last-child {
+//     transform-origin: center right;
+//   }
+// `;
+
+// const Info = styled(motion.div)`
+//   padding: 10px;
+//   background-color: ${(props) => props.theme.black.lighter};
+//   opacity: 0;
+//   position: absolute;
+//   width: 100%;
+//   bottom: 0;
+//   h4 {
+//     text-align: center;
+//     font-size: 18px;
+//   }
+// `;
+
+// const Overlay = styled(motion.div)`
+//   position: fixed;
+//   top: 0;
+//   width: 100%;
+//   height: 100%;
+//   background-color: rgba(0, 0, 0, 0.5);
+//   opacity: 0;
+// `;
+
+// const BigMovie = styled(motion.div)`
+//   position: absolute;
+//   width: 40vw;
+//   height: 80vh;
+//   left: 0;
+//   right: 0;
+//   margin: 0 auto;
+// `;
+
+// const rowVariants = {
+//   hidden: {
+//     x: window.outerWidth + 5,
+//   },
+//   visible: {
+//     x: 0,
+//   },
+//   exit: {
+//     x: -window.outerWidth - 5,
+//   },
+// };
+
+// const boxVariants = {
+//   normal: {
+//     scale: 1,
+//   },
+//   hover: {
+//     scale: 1.3,
+//     y: -50,
+//     transition: {
+//       delay: 0.5,
+//       duration: 0.1,
+//       type: 'tween',
+//     },
+//   },
+// };
+
+// const infoVariants = {
+//   hover: {
+//     opacity: 1,
+//     transition: {
+//       delay: 0.5,
+//       duration: 0.1,
+//       type: 'tween',
+//     },
+//   },
+// };
+
+// // 🔶 오버레이 만들기
+// // 모달 창 뒤에서 클릭을 감지할 수 있는 오버레이
+// // 모달 창 바깥을 클릭하면 모달 창이 다시 들어가고 원래 상태로 돌아감
+// // URL도 바뀌어야 함. URL이 바뀌면, Box도 바뀜
+
+// // 🔶 사용자가 어디에 있든, 스크롤 된 화면에 맞게 가운데 나오도록 하기
+// // 사용자의 scroll position을 알아야함
+// // framer-motion에서 useScroll 씀
+// // useScroll 은 object 하나를 return 해줌
+// // scrollX, scrollY 의 progress 값 또는 스크롤 된 거리의 숫자 값
+
+// // ✨ 한 번에 보여주고 싶은 영화의 수
+// const offset = 6;
+
+// function Home() {
+//   const history = useHistory();
+//   const bigMovieMatch = useRouteMatch<{ movieId: string }>('/movies/:movieId');
+//   // console.log(bigMovieMatch);
+//   const { scrollY } = useScroll();
+//   const { data, isLoading } = useQuery<IGetMoviesResult>(
+//     ['movies', 'nowPlaying'],
+//     getMovies
+//   );
+
+//   const [index, setIndex] = useState(0);
+//   const [leaving, setLeaving] = useState(false);
+//   const increaseIndex = () => {
+//     if (data) {
+//       if (leaving) return;
+//       toggleLeaving();
+//       const totalMovies = data?.results.length - 1;
+//       const maxIndex = Math.floor(totalMovies / offset) - 1;
+//       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+//     }
+//   };
+
+//   const toggleLeaving = () => setLeaving((prev) => !prev);
+//   const onBoxClicked = (movieId: number) => {
+//     history.push(`/movies/${movieId}`);
+//   };
+//   const onOverlayClick = () => history.push('/');
+//   return (
+//     <Wrapper>
+//       {isLoading ? (
+//         <Loader>Loading...</Loader>
+//       ) : (
+//         <>
+//           <Banner
+//             onClick={increaseIndex}
+//             $bgPhoto={makeImagePath(data?.results[0].backdrop_path || '')}
+//           >
+//             <Title>{data?.results[0].title}</Title>
+//             <Overview>{data?.results[0].overview}</Overview>
+//           </Banner>
+//           <Slider>
+//             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+//               <Row
+//                 variants={rowVariants}
+//                 initial="hidden"
+//                 animate="visible"
+//                 exit="exit"
+//                 transition={{ type: 'tween', duration: 1 }}
+//                 key={index}
+//               >
+//                 {/* <Box />
+//                 <Box />
+//                 <Box />
+//                 <Box />
+//                 <Box />
+//                 <Box /> */}
+//                 {/* 이미 배경으로 사용한 영화는 제외 */}
+//                 {data?.results
+//                   .slice(1)
+//                   .slice(offset * index, offset * index + offset)
+//                   .map((movie) => (
+//                     <Box
+//                       layoutId={movie.id + ''}
+//                       key={movie.id}
+//                       whileHover="hover"
+//                       initial="nomal"
+//                       variants={boxVariants}
+//                       onClick={() => onBoxClicked(movie.id)}
+//                       transition={{ type: 'tween' }}
+//                       $bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
+//                     >
+//                       <Info variants={infoVariants}>
+//                         <h4>{movie.title}</h4>
+//                       </Info>
+//                     </Box>
+//                   ))}
+//               </Row>
+//             </AnimatePresence>
+//           </Slider>
+//           <AnimatePresence>
+//             {bigMovieMatch ? (
+//               <>
+//                 {/* 두 개의 element를 return 할 수 있게 */}
+//                 {/* 서로 붙어있는 분리 된 컴포넌트들을 반환 */}
+//                 {/* 하나는 모달 창, 하나는 overlay */}
+//                 <Overlay
+//                   onClick={onOverlayClick}
+//                   exit={{ opacity: 0 }}
+//                   animate={{ opacity: 1 }}
+//                 />
+//                 <BigMovie
+//                   // MotionValue 에 margin 주려면 .get() 씀
+//                   style={{ top: scrollY.get() + 100 }}
+//                   layoutId={bigMovieMatch.params.movieId}
+//                 >
+//                   hello
+//                 </BigMovie>
+//               </>
+//             ) : null}
+//           </AnimatePresence>
+//         </>
+//       )}
+//     </Wrapper>
+//   );
+// }
+
+// export default Home;
+
 //////////////////////////////////////////////////
-// ✅ 9-12. Movie Modal part Two
-// 오버레이 만들기
-// 사용자가 어디에 있든, 스크롤 된 화면에 맞게 가운데 나오도록 하기
+// ✅ 9-13. Movie Modal part Three
+// 모달창에 이미지 불러오기. 미리보기
 
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
@@ -1156,7 +1422,7 @@ const Banner = styled.div<{ $bgPhoto: string }>`
   justify-content: center;
   padding: 60px;
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
-    url(${(props) => props.$bgPhoto});
+    url(${(props) => props.$bgPhoto}); // 두 개의 배경 rgba, 이미지
   background-size: cover;
 `;
 
@@ -1183,6 +1449,7 @@ const Row = styled(motion.div)`
   width: 100%;
 `;
 
+// () 다음에 넣어주면 됨 <{ $bgPhoto: string }>
 const Box = styled(motion.div)<{ $bgPhoto: string }>`
   background-color: white;
   background-image: url(${(props) => props.$bgPhoto});
@@ -1228,18 +1495,43 @@ const BigMovie = styled(motion.div)`
   left: 0;
   right: 0;
   margin: 0 auto;
+  border-radius: 15px;
+  overflow: hidden;
+  background-color: ${(props) => props.theme.black.lighter};
+`;
+
+const BigCover = styled.div`
+  width: 100%;
+  background-size: cover;
+  background-position: center center;
+  height: 400px;
+`;
+
+const BigTitle = styled.h3`
+  color: ${(props) => props.theme.white.lighter};
+  padding: 20px;
+  font-size: 2.5rem;
+  position: relative;
+  top: -80px;
+`;
+
+const BigOverview = styled.p`
+  color: ${(props) => props.theme.white.lighter};
+  padding: 20px;
+  position: relative;
+  top: -80px;
 `;
 
 const rowVariants = {
   hidden: {
-    x: window.outerWidth + 5,
-  },
+    x: window.outerWidth + 5, // 사용자 화면의 크기 받아오기
+  }, // 보이지 않을 때
   visible: {
     x: 0,
-  },
+  }, // 보일 때
   exit: {
     x: -window.outerWidth - 5,
-  },
+  }, // 사라질 때
 };
 
 const boxVariants = {
@@ -1268,20 +1560,14 @@ const infoVariants = {
   },
 };
 
-// 🔶 오버레이 만들기
-// 모달 창 뒤에서 클릭을 감지할 수 있는 오버레이
-// 모달 창 바깥을 클릭하면 모달 창이 다시 들어가고 원래 상태로 돌아감
-// URL도 바뀌어야 함. URL이 바뀌면, Box도 바뀜
+// 🔶 사용자가 클릭한 영화 찾기
+// movieId 를 이용해서 API 에서 얻어온 data 에서 그 영화를 찾는다
+// 그러면 다른 컴포넌트가 이 URL 로 API 정보를 얻어오는 동안 미리보기를 보여줄 수 있다
 
-// 🔶 사용자가 어디에 있든, 스크롤 된 화면에 맞게 가운데 나오도록 하기
-// 사용자의 scroll position을 알아야함
-// framer-motion에서 useScroll 씀
-// useScroll 은 object 하나를 return 해줌
-// scrollX, scrollY 의 progress 값 또는 스크롤 된 거리의 숫자 값
-
-// ✨ 한 번에 보여주고 싶은 영화의 수
+// 한 번에 보여주고 싶은 영화의 수
 const offset = 6;
 
+// useQuery Hook 은 fetcher 를 사용해서 data 랑 아직 로딩중인지에 대한 알림을 전해준다
 function Home() {
   const history = useHistory();
   const bigMovieMatch = useRouteMatch<{ movieId: string }>('/movies/:movieId');
@@ -1291,30 +1577,53 @@ function Home() {
     ['movies', 'nowPlaying'],
     getMovies
   );
+  // console.log(data, isLoading);
 
+  // 인덱스 시스템 만들기
   const [index, setIndex] = useState(0);
+  // index를 증가시키는 함수
+  // 전 index 를 1만큼 증가시키는 역할
   const [leaving, setLeaving] = useState(false);
   const increaseIndex = () => {
     if (data) {
       if (leaving) return;
       toggleLeaving();
+      // totalMovies 정의
+      // totalMovies는 영화의 총 개수에서 하나를 뺀 값
       const totalMovies = data?.results.length - 1;
+      // 갯수가 4.2 이런식으로 될수도 있으니 올림 처리 해줌
+      // 영화 하나가 남아서 floor로 바꿈 하나 적게
+      // page가 0에서 시작하기 때문에, maxIndex도 1 감소시킴
       const maxIndex = Math.floor(totalMovies / offset) - 1;
+      // 증가시키려고 하는 index가 이미 maxIndex라면, 0으로 되돌리고
+      // 그렇지 않으면 증가
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
   };
-
+  // leaving 을 반전시키는 역할
   const toggleLeaving = () => setLeaving((prev) => !prev);
+  // Box가 클릭됐을 때 호출 될 함수
+  // 이 함수는 movieId 를 argument(인자)로 받을 것임
   const onBoxClicked = (movieId: number) => {
     history.push(`/movies/${movieId}`);
   };
   const onOverlayClick = () => history.push('/');
+  // clickedMovie 상수 만듦
+  // bigMovieMatch 가 존재하는지 확인
+  const clickedMovie =
+    bigMovieMatch?.params.movieId &&
+    data?.results.find((movie) => movie.id === +bigMovieMatch.params.movieId);
+  console.log(clickedMovie);
+
   return (
     <Wrapper>
       {isLoading ? (
         <Loader>Loading...</Loader>
       ) : (
         <>
+          {/* 배경 이미지를 Banner 컴포넌트(bgPhoto)에 넘김 */}
+          {/* bgPhoto 는 만들어진 utils에서 이미 경로여야함 */}
+          {/* bgPhoto 대문자 에러때문에 $붙임 */}
           <Banner
             onClick={increaseIndex}
             $bgPhoto={makeImagePath(data?.results[0].backdrop_path || '')}
@@ -1344,11 +1653,16 @@ function Home() {
                   .slice(offset * index, offset * index + offset)
                   .map((movie) => (
                     <Box
+                      // movie.id는 number고, layout는 string이어야 함
+                      // + '' 로 간단하게 string 으로 변환
                       layoutId={movie.id + ''}
                       key={movie.id}
                       whileHover="hover"
                       initial="nomal"
                       variants={boxVariants}
+                      // onClick prop에 function을 넣어줄건데
+                      // onBoxClicked function 에 argument를 넘겨야 하니
+                      // 익명함수 사용
                       onClick={() => onBoxClicked(movie.id)}
                       transition={{ type: 'tween' }}
                       $bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
@@ -1377,7 +1691,20 @@ function Home() {
                   style={{ top: scrollY.get() + 100 }}
                   layoutId={bigMovieMatch.params.movieId}
                 >
-                  hello
+                  {clickedMovie && (
+                    <>
+                      <BigCover
+                        style={{
+                          backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
+                            clickedMovie.backdrop_path,
+                            'w500'
+                          )})`,
+                        }}
+                      />
+                      <BigTitle>{clickedMovie.title}</BigTitle>
+                      <BigOverview>{clickedMovie.overview}</BigOverview>
+                    </>
+                  )}
                 </BigMovie>
               </>
             ) : null}
